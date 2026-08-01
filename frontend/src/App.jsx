@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 
-
-// 🚀 1. 생성하신 6개의 모듈 컴포넌트 불러오기 (같은 폴더에 있다고 가정)
 import HomeDashboard from './components/HomeDashboard.jsx';
 import ContentStudio from './components/ContentStudio.jsx';
 import AiMarketing from './components/AiMarketing.jsx';
@@ -9,24 +7,24 @@ import IntegrationHub from './components/IntegrationHub.jsx';
 import WeeklyReport from './components/WeeklyReport.jsx';
 import YearlyCalendar from './components/YearlyCalendar.jsx';
 import InstagramPrompts from './components/InstagramPrompts.jsx';
+import SocialMonitor from './components/SocialMonitor.jsx';
 
-// 상단 네비게이션 아이콘 세트
 const Icons = {
-  Leaf: () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>,
-  Home: () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>,
-  Studio: () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><polygon points="10 8 16 12 10 16 10 8"/></svg>,
-  Marketing: () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>,
-  Hub: () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6" y2="6"/><line x1="6" y1="18" x2="6" y2="18"/></svg>,
-  Report: () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>,
-  Calendar: () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+  Hexagon: () => <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>,
+  Home: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>,
+  Monitor: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>,
+  Studio: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>,
+  Marketing: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><path d="M2 12h20"/></svg>,
+  Hub: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>,
+  Report: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>,
+  Calendar: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>,
+  Activity: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
 };
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('HomeDashboard');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  // 🚀 2. 글로벌 확장 데이터 세팅 (자식 컴포넌트들에게 Props로 내려줄 데이터)
-  
-  // [데이터 1] 실시간 트래픽 (HomeDashboard 용)
   const [traffic, setTraffic] = useState({ blog: 412, insta: 128, store: 85 });
   
   useEffect(() => {
@@ -40,7 +38,6 @@ export default function App() {
     return () => clearInterval(interval);
   }, []);
 
-  // [데이터 2] 확장된 공예 제품 주간 판매/클래스 현황 (WeeklyReport 용)
   const weeklyData = [
     { craft: '슈링클스 키링', type: '주문제작', count: 42, revenue: '630,000', trend: 'up' },
     { craft: '발포세라믹 화분', type: '원데이클래스', count: 18, revenue: '900,000', trend: 'up' },
@@ -48,14 +45,12 @@ export default function App() {
     { craft: '페이퍼 아트 토퍼', type: '주문제작', count: 89, revenue: '890,000', trend: 'up' }
   ];
 
-  // [데이터 3] 연간 주요 시즌 일정 (YearlyCalendar 용)
   const yearlySchedule = [
     { month: '4월-5월', event: '가정의 달 피크', target: '페이퍼 토퍼, 슈링클스 키링 세트' },
     { month: '7월-8월', event: '여름 인테리어 기획전', target: '제스모나이트 마블링 트레이' },
     { month: '9월-10월', event: '가을 업사이클링 클래스', target: '발포세라믹 오브제 제작' }
   ];
 
-  // [데이터 4] 시스템 연동 상태 (IntegrationHub 용)
   const integrations = [
     { name: 'n8n Workflow', status: 'connected', latency: '42ms', lastSync: '방금 전' },
     { name: 'Python Data Scraper', status: 'connected', latency: '120ms', lastSync: '1시간 전' },
@@ -63,26 +58,29 @@ export default function App() {
     { name: 'Notion Database', status: 'connected', latency: '85ms', lastSync: '10분 전' }
   ];
 
-  // 🚀 3. 탭 메뉴 구성 배열
   const tabs = [
-    { id: 'HomeDashboard', label: '홈', icon: <Icons.Home /> },
+    { id: 'HomeDashboard', label: '대시보드', icon: <Icons.Home /> },
+    { id: 'SocialMonitor', label: '소셜 모니터링', icon: <Icons.Monitor /> },
     { id: 'ContentStudio', label: '콘텐츠 스튜디오', icon: <Icons.Studio /> },
     { id: 'AiMarketing', label: 'AI 마케팅', icon: <Icons.Marketing /> },
-    { id: 'IntegrationHub', label: '연동 허브', icon: <Icons.Hub /> },
     { id: 'InstagramPrompts', label: '인스타 프롬프트', icon: <Icons.Marketing /> },
+    { id: 'IntegrationHub', label: '연동 허브', icon: <Icons.Hub /> },
     { id: 'WeeklyReport', label: '주간 리포트', icon: <Icons.Report /> },
     { id: 'YearlyCalendar', label: '연간 일정', icon: <Icons.Calendar /> }
   ];
 
-  // 🚀 4. 활성화된 탭에 따라 컴포넌트 렌더링
   const renderActiveComponent = () => {
     switch (activeTab) {
       case 'HomeDashboard':
         return <HomeDashboard traffic={traffic} />;
+      case 'SocialMonitor':
+        return <SocialMonitor />;
       case 'ContentStudio':
         return <ContentStudio />;
       case 'AiMarketing':
         return <AiMarketing />;
+      case 'InstagramPrompts':
+        return <InstagramPrompts />;
       case 'IntegrationHub':
         return <IntegrationHub integrations={integrations} />;
       case 'WeeklyReport':
@@ -91,48 +89,100 @@ export default function App() {
         return <YearlyCalendar schedule={yearlySchedule} />;
       default:
         return <HomeDashboard traffic={traffic} />;
-case 'InstagramPrompts':
-  return <InstagramPrompts />;
     }
   };
 
   return (
-    <div className="min-h-screen relative font-sans text-gray-900 p-4 md:p-8 box-border"
-         style={{ 
-           backgroundImage: 'url("https://images.unsplash.com/photo-1536657464919-892534f60d6e?q=80&w=2574&auto=format&fit=crop")',
-           backgroundSize: 'cover', backgroundPosition: 'center', backgroundAttachment: 'fixed'
-         }}>
-      
-      <div className="absolute inset-0 bg-gradient-to-br from-white/80 to-green-50/90 backdrop-blur-md pointer-events-none z-0"></div>
+    <div className="min-h-screen bg-neutral-950 text-neutral-100 font-sans antialiased selection:bg-neutral-800 selection:text-white">
+      <div className="w-full h-px bg-neutral-800/80"></div>
 
-      {/* 헤더 및 네비게이션 */}
-      <header className="relative z-10 flex flex-col xl:flex-row justify-between items-center max-w-7xl mx-auto mb-8 gap-4">
-        <div className="flex items-center gap-2 font-extrabold text-2xl">
-          <span className="text-green-800"><Icons.Leaf /></span>
-          <span className="tracking-tight text-gray-900">Blossom Topper</span>
-          <span className="ml-2 text-xs font-medium bg-black text-white px-2 py-1 rounded-md">Control Center</span>
+      <header className="sticky top-0 z-50 backdrop-blur-xl bg-neutral-950/75 border-b border-neutral-800/60 px-4 lg:px-8 py-3.5">
+        <div className="max-w-7xl mx-auto grid grid-cols-3 items-center">
+          
+          {/* Left: Logo & Brand */}
+          <div className="flex items-center gap-3 justify-start">
+            <div className="p-2 rounded-xl bg-neutral-900 border border-neutral-800 text-neutral-200">
+              <Icons.Hexagon />
+            </div>
+            <div className="hidden sm:block">
+              <div className="flex items-center gap-2">
+                <span className="font-semibold text-sm tracking-tight text-neutral-100">Blossom Topper</span>
+                <span className="text-[10px] font-mono tracking-wider bg-neutral-800 text-neutral-400 px-1.5 py-0.5 rounded border border-neutral-700/50">v2.6</span>
+              </div>
+              <p className="text-[11px] text-neutral-400 font-mono">Control Center</p>
+            </div>
+          </div>
+
+          {/* Center: Navigation Tabs */}
+          <nav className="hidden xl:flex items-center justify-center gap-1 bg-neutral-900/80 p-1 rounded-xl border border-neutral-800/80 justify-self-center">
+            {tabs.map((tab) => {
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 ${
+                    isActive
+                      ? 'bg-neutral-800 text-neutral-100 shadow-sm border border-neutral-700/60'
+                      : 'text-neutral-400 hover:text-neutral-200 hover:bg-neutral-800/40 border border-transparent'
+                  }`}
+                >
+                  <span className={isActive ? 'text-neutral-100' : 'text-neutral-400'}>{tab.icon}</span>
+                  <span>{tab.label}</span>
+                </button>
+              );
+            })}
+          </nav>
+
+          {/* Right: Utility & Status Actions */}
+          <div className="flex items-center justify-end gap-3">
+            <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-neutral-900/80 border border-neutral-800 text-xs text-neutral-300">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+              <span className="font-mono text-[11px]">System Online</span>
+            </div>
+
+            <div className="xl:hidden flex items-center">
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="px-3 py-1.5 bg-neutral-900 hover:bg-neutral-800 text-neutral-300 rounded-lg text-xs font-medium border border-neutral-800 transition-colors"
+              >
+                {isMobileMenuOpen ? '닫기 ✕' : '메뉴 ☰'}
+              </button>
+            </div>
+          </div>
         </div>
 
-        {/* 모듈화된 탭 네비게이션 */}
-        <nav className="flex overflow-x-auto justify-start xl:justify-center gap-2 bg-white/60 backdrop-blur-xl p-1.5 rounded-full shadow-sm border border-white/90 max-w-full">
-          {tabs.map((tab) => (
-            <button 
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold transition-all shrink-0 ${
-                activeTab === tab.id ? 'bg-white text-gray-900 shadow-md' : 'text-gray-600 hover:bg-white/50'
-              }`}
-            >
-              <span className="flex items-center justify-center">{tab.icon}</span>
-              <span className="whitespace-nowrap">{tab.label}</span>
-            </button>
-          ))}
-        </nav>
+        {isMobileMenuOpen && (
+          <div className="xl:hidden mt-3 pt-3 border-t border-neutral-800/80 grid grid-cols-2 sm:grid-cols-3 gap-1.5 animate-fade-in">
+            {tabs.map((tab) => {
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => {
+                    setActiveTab(tab.id);
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium transition-all ${
+                    isActive
+                      ? 'bg-neutral-800 text-neutral-100 border border-neutral-700/60'
+                      : 'text-neutral-400 bg-neutral-900/50 hover:bg-neutral-900 border border-neutral-800/50'
+                  }`}
+                >
+                  <span className={isActive ? 'text-neutral-100' : 'text-neutral-400'}>{tab.icon}</span>
+                  <span className="truncate">{tab.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        )}
       </header>
 
-      {/* 선택된 모듈 컴포넌트가 주입되는 영역 */}
-      <main className="relative z-10 max-w-7xl mx-auto">
-        <div className="animate-fade-in">
+      <main className="max-w-7xl mx-auto px-4 lg:px-8 py-8">
+        <div className="transition-opacity duration-200">
           {renderActiveComponent()}
         </div>
       </main>

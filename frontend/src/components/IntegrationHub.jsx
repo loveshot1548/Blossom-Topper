@@ -1,7 +1,6 @@
 import React from 'react';
 
 export default function IntegrationHub({ integrations }) {
-  // 상태에 따른 스타일 지정 함수
   const getStatusColor = (status) => {
     switch (status) {
       case 'connected': return 'bg-green-100 text-green-700';
@@ -12,19 +11,19 @@ export default function IntegrationHub({ integrations }) {
   };
 
   return (
-    <div className="animate-fade-in space-y-6">
+    <div className="animate-fade-in space-y-6 px-2 sm:px-0">
       <div className="mb-6">
-        <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">연동 허브</h1>
-        <p className="text-gray-700 mt-2">사내 파이프라인 및 외부 디자인/DB 툴의 네트워크 상태를 모니터링합니다.</p>
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">연동 허브</h1>
+        <p className="text-sm sm:text-base text-gray-700 mt-2">사내 파이프라인 및 외부 디자인/DB 툴의 네트워크 상태를 모니터링합니다.</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {integrations.map((item, idx) => (
-          <div key={idx} className="bg-white/70 backdrop-blur-2xl rounded-3xl p-6 shadow-sm border border-white/90 flex flex-col justify-between h-48">
+          <div key={idx} className="bg-white/70 backdrop-blur-2xl rounded-3xl p-5 sm:p-6 shadow-sm border border-white/90 flex flex-col justify-between min-h-[13rem]">
             <div>
-              <div className="flex justify-between items-start mb-2">
-                <h3 className="text-sm font-bold text-gray-900">{item.name}</h3>
-                <span className={`text-[10px] font-bold px-2 py-1 rounded-md uppercase ${getStatusColor(item.status)}`}>
+              <div className="flex justify-between items-start mb-2 gap-2">
+                <h3 className="text-sm font-bold text-gray-900 break-words">{item.name}</h3>
+                <span className={`text-[10px] font-bold px-2 py-1 rounded-md uppercase shrink-0 ${getStatusColor(item.status)}`}>
                   {item.status}
                 </span>
               </div>
@@ -39,19 +38,18 @@ export default function IntegrationHub({ integrations }) {
         ))}
       </div>
 
-      {/* 특수 툴 연동 상태 하드코딩 영역 */}
-      <div className="bg-white/70 backdrop-blur-2xl rounded-3xl p-6 shadow-sm border border-white/90 flex gap-4 overflow-x-auto">
-        <div className="flex items-center gap-3 bg-white/50 px-4 py-2 rounded-xl border border-gray-100">
+      <div className="bg-white/70 backdrop-blur-2xl rounded-3xl p-5 sm:p-6 shadow-sm border border-white/90 flex gap-4 overflow-x-auto custom-scrollbar">
+        <div className="flex items-center gap-3 bg-white/50 px-4 py-2.5 rounded-xl border border-gray-100 shrink-0">
           <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-          <span className="text-sm font-bold text-gray-800">Figma Assets Sync</span>
+          <span className="text-xs sm:text-sm font-bold text-gray-800">Figma Assets Sync</span>
         </div>
-        <div className="flex items-center gap-3 bg-white/50 px-4 py-2 rounded-xl border border-gray-100">
+        <div className="flex items-center gap-3 bg-white/50 px-4 py-2.5 rounded-xl border border-gray-100 shrink-0">
           <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-          <span className="text-sm font-bold text-gray-800">Canva Template API</span>
+          <span className="text-xs sm:text-sm font-bold text-gray-800">Canva Template API</span>
         </div>
-        <div className="flex items-center gap-3 bg-white/50 px-4 py-2 rounded-xl border border-gray-100">
+        <div className="flex items-center gap-3 bg-white/50 px-4 py-2.5 rounded-xl border border-gray-100 shrink-0">
           <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-          <span className="text-sm font-bold text-gray-800">Notion DB Routing</span>
+          <span className="text-xs sm:text-sm font-bold text-gray-800">Notion DB Routing</span>
         </div>
       </div>
     </div>

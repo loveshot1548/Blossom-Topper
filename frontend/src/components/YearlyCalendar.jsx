@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 
 export default function YearlyCalendar() {
-  // 오늘 날짜 (기준일)
   const today = new Date();
   
-  // 사용자 메모장 상태 관리 (로컬 스토리지 연동)
   const [memos, setMemos] = useState(() => {
     const saved = localStorage.getItem('calendar_memos');
     return saved ? JSON.parse(saved) : {};
@@ -18,7 +16,6 @@ export default function YearlyCalendar() {
     setMemos(prev => ({ ...prev, [monthId]: value }));
   };
 
-  // D-Day 계산 함수
   const calculateDDay = (targetDateStr) => {
     const targetDate = new Date(targetDateStr);
     const diffTime = targetDate - today;
@@ -29,7 +26,6 @@ export default function YearlyCalendar() {
     return `D+${Math.abs(diffDays)} (종료)`;
   };
 
-  // 12개월 세부 일정 및 마케팅 전략 데이터
   const yearlyData = [
     { id: 'm1', month: '1월', date: '2026-01-01', event: '새해/설날 준비', strategy: '제스모나이트 목표 달성 트레이, 새해 다짐 슈링클스 키링 원데이 클래스 오픈', keywords: '#새해선물 #설날용돈토퍼' },
     { id: 'm2', month: '2월', date: '2026-02-14', event: '졸업식 & 발렌타인데이', strategy: '꽃다발용 페이퍼 토퍼 집중 홍보, 커플 대상 슈링클스 키링 제작 클래스', keywords: '#졸업식토퍼 #발렌타인공방데이트' },
@@ -46,51 +42,50 @@ export default function YearlyCalendar() {
   ];
 
   return (
-    <div className="animate-fade-in space-y-6">
-      <div className="flex justify-between items-end mb-6">
+    <div className="animate-fade-in space-y-6 px-2 sm:px-0">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-6">
         <div>
-          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">연간 기획 캘린더</h1>
-          <p className="text-gray-700 mt-2">시즌별 마케팅 전략과 이벤트 일정을 관리하세요.</p>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">연간 기획 캘린더</h1>
+          <p className="text-sm sm:text-base text-gray-700 mt-2">시즌별 마케팅 전략과 이벤트 일정을 관리하세요.</p>
         </div>
-        <div className="bg-green-800 text-white px-5 py-2.5 rounded-2xl shadow-md font-bold">
+        <div className="bg-green-800 text-white px-4 sm:px-5 py-2.5 rounded-2xl shadow-md font-bold text-xs sm:text-sm shrink-0">
           오늘: {today.getFullYear()}년 {today.getMonth() + 1}월 {today.getDate()}일
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 max-h-[700px] overflow-y-auto custom-scrollbar pr-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 max-h-[75vh] overflow-y-auto custom-scrollbar pr-1 sm:pr-2">
         {yearlyData.map((item) => {
           const dDayStr = calculateDDay(item.date);
           const isPassed = dDayStr.includes('종료');
           
           return (
-            <div key={item.id} className={`bg-white/80 backdrop-blur-xl rounded-3xl p-6 border ${isPassed ? 'border-gray-200 opacity-60' : 'border-green-800/20 shadow-sm'} flex flex-col transition-all hover:shadow-md`}>
+            <div key={item.id} className={`bg-white/80 backdrop-blur-xl rounded-3xl p-5 sm:p-6 border ${isPassed ? 'border-gray-200 opacity-60' : 'border-green-800/20 shadow-sm'} flex flex-col transition-all hover:shadow-md`}>
               <div className="flex justify-between items-start mb-4">
-                <h2 className="text-2xl font-black text-gray-900">{item.month}</h2>
-                <span className={`px-3 py-1 rounded-lg text-sm font-bold ${isPassed ? 'bg-gray-100 text-gray-500' : 'bg-red-100 text-red-600'}`}>
+                <h2 className="text-xl sm:text-2xl font-black text-gray-900">{item.month}</h2>
+                <span className={`px-2.5 sm:px-3 py-1 rounded-lg text-xs sm:text-sm font-bold ${isPassed ? 'bg-gray-100 text-gray-500' : 'bg-red-100 text-red-600'}`}>
                   {dDayStr}
                 </span>
               </div>
               
               <div className="space-y-3 flex-grow">
                 <div>
-                  <span className="text-xs font-bold text-green-800 bg-green-100 px-2 py-1 rounded-md">핵심 이슈</span>
-                  <p className="text-gray-900 font-bold mt-1.5">{item.event} <span className="text-sm font-normal text-gray-500">({item.date})</span></p>
+                  <span className="text-[10px] sm:text-xs font-bold text-green-800 bg-green-100 px-2 py-1 rounded-md">핵심 이슈</span>
+                  <p className="text-xs sm:text-sm text-gray-900 font-bold mt-1.5 break-words">{item.event} <span className="text-xs font-normal text-gray-500">({item.date})</span></p>
                 </div>
                 
                 <div>
-                  <span className="text-xs font-bold text-blue-800 bg-blue-100 px-2 py-1 rounded-md">콘텐츠 & 상품 전략</span>
-                  <p className="text-sm text-gray-700 mt-1.5 leading-relaxed">{item.strategy}</p>
+                  <span className="text-[10px] sm:text-xs font-bold text-blue-800 bg-blue-100 px-2 py-1 rounded-md">콘텐츠 & 상품 전략</span>
+                  <p className="text-xs sm:text-sm text-gray-700 mt-1.5 leading-relaxed break-words">{item.strategy}</p>
                 </div>
 
                 <div>
-                  <p className="text-xs font-medium text-gray-500 mt-2">{item.keywords}</p>
+                  <p className="text-[11px] sm:text-xs font-medium text-gray-500 mt-2 break-words">{item.keywords}</p>
                 </div>
               </div>
 
-              {/* 사용자 메모장 영역 */}
               <div className="mt-4 pt-4 border-t border-gray-100">
                 <textarea
-                  className="w-full text-sm bg-gray-50/50 border border-gray-200 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-green-800 resize-none placeholder-gray-400"
+                  className="w-full text-xs sm:text-sm bg-gray-50/50 border border-gray-200 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-green-800 resize-none placeholder-gray-400"
                   rows="3"
                   placeholder={`${item.month}의 내 작업 목표나 아이디어를 기록하세요...`}
                   value={memos[item.id] || ''}

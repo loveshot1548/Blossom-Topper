@@ -8,7 +8,6 @@ export default function ContentStudio() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
 
-  // 공방 맞춤형 AI 초안 생성 시뮬레이터 (실제 구동 시 n8n / OpenAI API 연동 가능)
   const handleGenerate = () => {
     setIsGenerating(true);
     setCopySuccess(false);
@@ -28,7 +27,6 @@ export default function ContentStudio() {
     }, 800);
   };
 
-  // 클립보드 복사 함수
   const handleCopy = () => {
     navigator.clipboard.writeText(generatedContent);
     setCopySuccess(true);
@@ -36,16 +34,15 @@ export default function ContentStudio() {
   };
 
   return (
-    <div className="animate-fade-in space-y-6 max-w-5xl mx-auto">
+    <div className="animate-fade-in space-y-6 max-w-5xl mx-auto px-2 sm:px-0">
       <div>
-        <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">콘텐츠 스튜디오</h1>
-        <p className="text-gray-700 mt-2">AI로 초안을 생성하고, 최종 검수 및 수정 후 수동으로 발행하세요.</p>
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">콘텐츠 스튜디오</h1>
+        <p className="text-sm sm:text-base text-gray-700 mt-2">AI로 초안을 생성하고, 최종 검수 및 수정 후 수동으로 발행하세요.</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* 좌측: 조건 설정 패널 */}
-        <div className="bg-white/85 backdrop-blur-xl p-6 rounded-3xl border border-green-800/20 shadow-sm space-y-4">
-          <h2 className="text-lg font-bold text-gray-900 border-b pb-3">⚙️ 콘텐츠 조건 설정</h2>
+        <div className="bg-white/85 backdrop-blur-xl p-5 sm:p-6 rounded-3xl border border-green-800/20 shadow-sm space-y-4">
+          <h2 className="text-base sm:text-lg font-bold text-gray-900 border-b pb-3">⚙️ 콘텐츠 조건 설정</h2>
 
           <div>
             <label className="block text-xs font-bold text-gray-600 mb-1.5">대상 공예품</label>
@@ -96,31 +93,30 @@ export default function ContentStudio() {
           </button>
         </div>
 
-        {/* 우측: 결과값 확인 및 수동 검수 에디터 */}
-        <div className="lg:col-span-2 bg-white/85 backdrop-blur-xl p-6 rounded-3xl border border-green-800/20 shadow-sm flex flex-col justify-between">
+        <div className="lg:col-span-2 bg-white/85 backdrop-blur-xl p-5 sm:p-6 rounded-3xl border border-green-800/20 shadow-sm flex flex-col justify-between">
           <div>
-            <div className="flex justify-between items-center mb-3">
-              <h2 className="text-lg font-bold text-gray-900">📝 결과값 검수 및 직접 수정</h2>
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-3">
+              <h2 className="text-base sm:text-lg font-bold text-gray-900">📝 결과값 검수 및 직접 수정</h2>
               <span className="text-xs bg-green-100 text-green-800 font-bold px-2.5 py-1 rounded-lg">수동 최종 발행 모드</span>
             </div>
             <p className="text-xs text-gray-700 mb-3">아래 텍스트는 자유롭게 수정이 가능합니다. 마음에 드는 형태로 다듬은 뒤 복사해서 사용하세요.</p>
             
             <textarea
-              className="w-full h-72 bg-gray-50 border border-gray-200 rounded-2xl p-4 text-sm text-gray-900 leading-relaxed focus:ring-2 focus:ring-green-800 focus:outline-none resize-none"
+              className="w-full h-64 sm:h-72 bg-gray-50 border border-gray-200 rounded-2xl p-4 text-sm text-gray-900 leading-relaxed focus:ring-2 focus:ring-green-800 focus:outline-none resize-none"
               value={generatedContent}
               onChange={(e) => setGeneratedContent(e.target.value)}
               placeholder="좌측에서 조건을 선택하고 [AI 콘텐츠 초안 생성하기] 버튼을 누르면 여기에 결과가 출력됩니다..."
             />
           </div>
 
-          <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mt-4 pt-4 border-t border-gray-100">
             <span className="text-xs text-gray-700">
               {copySuccess ? '클립보드에 복사되었습니다! 🎉' : '발행할 준비가 되었다면 복사 버튼을 누르세요.'}
             </span>
             <button
               onClick={handleCopy}
               disabled={!generatedContent}
-              className={`px-6 py-2.5 rounded-xl font-bold text-sm shadow-sm transition-all ${
+              className={`w-full sm:w-auto px-6 py-2.5 rounded-xl font-bold text-sm shadow-sm transition-all ${
                 generatedContent ? 'bg-gray-900 text-white hover:bg-black' : 'bg-gray-200 text-gray-400 cursor-not-allowed'
               }`}
             >

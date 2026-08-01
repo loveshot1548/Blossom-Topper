@@ -3,13 +3,11 @@ import React, { useState, useEffect } from 'react';
 export default function AiMarketing() {
   const trendingTags = ['#JesmoniteArt', '#EcoCraft', '#발포세라믹', '#맞춤토퍼'];
 
-  // 🚀 전자책(PDF) 기반 실전형 프롬프트 데이터 세팅 (localStorage 연동)
   const [prompts, setPrompts] = useState(() => {
     const savedPrompts = localStorage.getItem('blossom_prompts');
     if (savedPrompts) {
       return JSON.parse(savedPrompts);
     }
-    // 최초 실행 시 PDF에서 추출한 11가지 핵심 프롬프트가 기본값으로 저장됩니다.
     return [
       { id: 1, category: '블로그 기획', title: '월간 포스팅 캘린더 기획', content: '내 블로그 주제는 맞춤 토퍼 및 제스모나이트 소품 제작입니다. 이번 달에 쓸 수 있는 포스팅 아이디어 12편을 주제·제목·예상 키워드·독자 TPO 포함해서 표로 만들어 주세요.' },
       { id: 2, category: '블로그 기획', title: '고객 TPO 분석 및 타겟팅', content: '[발포세라믹 원데이클래스]를 검색할 독자의 TPO(누가/언제/상황/목적)를 3가지 페르소나로 분석하고, 각 페르소나에게 필요한 정보 TOP 3을 알려주세요.' },
@@ -27,7 +25,6 @@ export default function AiMarketing() {
 
   const [newPrompt, setNewPrompt] = useState({ category: '블로그 기획', title: '', content: '' });
 
-  // 데이터가 변경될 때마다 브라우저 로컬 스토리지에 자동 저장
   useEffect(() => {
     localStorage.setItem('blossom_prompts', JSON.stringify(prompts));
   }, [prompts]);
@@ -45,39 +42,36 @@ export default function AiMarketing() {
   };
 
   return (
-    <div className="animate-fade-in space-y-6">
+    <div className="animate-fade-in space-y-6 px-2 sm:px-0">
       <div className="mb-6">
-        <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">AI 마케팅 & 프롬프트 사전</h1>
-        <p className="text-gray-700 mt-2">1인 공방에 최적화된 프롬프트를 활용하여 고품질 콘텐츠를 빠르게 생산하세요.</p>
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">AI 마케팅 & 프롬프트 사전</h1>
+        <p className="text-sm sm:text-base text-gray-700 mt-2">1인 공방에 최적화된 프롬프트를 활용하여 고품질 콘텐츠를 빠르게 생산하세요.</p>
       </div>
 
-      {/* 상단: 트렌드 분석 영역 */}
-      <div className="bg-white/70 backdrop-blur-2xl rounded-3xl p-6 shadow-sm border border-white/90 mb-6">
-        <h3 className="text-lg font-bold mb-4 text-gray-900">📈 이번 주 급상승 해시태그</h3>
+      <div className="bg-white/70 backdrop-blur-2xl rounded-3xl p-5 sm:p-6 shadow-sm border border-white/90 mb-6">
+        <h3 className="text-base sm:text-lg font-bold mb-3 sm:mb-4 text-gray-900">📈 이번 주 급상승 해시태그</h3>
         <div className="flex flex-wrap gap-2 mb-4">
           {trendingTags.map((tag, idx) => (
-            <span key={idx} className="bg-green-800/10 text-green-800 px-4 py-2 rounded-full text-sm font-bold">
+            <span key={idx} className="bg-green-800/10 text-green-800 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-bold">
               {tag}
             </span>
           ))}
         </div>
-        <p className="text-xs text-gray-600 bg-white/50 p-3 rounded-xl border border-gray-100">
+        <p className="text-xs sm:text-sm text-gray-600 bg-white/50 p-3 rounded-xl border border-gray-100">
           💡 AI 분석 요약: 인테리어 소품 중심의 비주얼 키워드와 업사이클링 관련 검색량이 블로그를 중심으로 210% 증가했습니다.
         </p>
       </div>
 
-      {/* 하단: 프롬프트 사전 (등록 및 리스트) */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* 새 프롬프트 추가 폼 */}
-        <div className="lg:col-span-1 bg-white/70 backdrop-blur-2xl rounded-3xl p-6 shadow-sm border border-white/90 h-fit">
-          <h3 className="text-lg font-bold mb-4 text-gray-900">새 프롬프트 추가</h3>
+        <div className="lg:col-span-1 bg-white/70 backdrop-blur-2xl rounded-3xl p-5 sm:p-6 shadow-sm border border-white/90 h-fit">
+          <h3 className="text-base sm:text-lg font-bold mb-4 text-gray-900">새 프롬프트 추가</h3>
           <form onSubmit={handleAddPrompt} className="flex flex-col gap-4">
             <div>
               <label className="block text-xs font-bold text-gray-700 mb-1">카테고리</label>
               <select 
                 value={newPrompt.category} 
                 onChange={(e) => setNewPrompt({...newPrompt, category: e.target.value})}
-                className="w-full p-2 text-sm rounded-xl border border-gray-300 bg-white/50 focus:outline-none focus:ring-2 focus:ring-green-800"
+                className="w-full p-2.5 sm:p-2 text-sm rounded-xl border border-gray-300 bg-white/50 focus:outline-none focus:ring-2 focus:ring-green-800"
               >
                 <option>블로그 기획</option>
                 <option>본문 작성</option>
@@ -93,7 +87,7 @@ export default function AiMarketing() {
                 placeholder="예: 맞춤 토퍼 인스타 해시태그 생성"
                 value={newPrompt.title}
                 onChange={(e) => setNewPrompt({...newPrompt, title: e.target.value})}
-                className="w-full p-2 text-sm rounded-xl border border-gray-300 bg-white/50 focus:outline-none focus:ring-2 focus:ring-green-800"
+                className="w-full p-2.5 sm:p-2 text-sm rounded-xl border border-gray-300 bg-white/50 focus:outline-none focus:ring-2 focus:ring-green-800"
               />
             </div>
             <div>
@@ -103,32 +97,31 @@ export default function AiMarketing() {
                 placeholder="AI에게 지시할 명령어를 입력하세요..."
                 value={newPrompt.content}
                 onChange={(e) => setNewPrompt({...newPrompt, content: e.target.value})}
-                className="w-full p-2 text-sm rounded-xl border border-gray-300 bg-white/50 focus:outline-none focus:ring-2 focus:ring-green-800 resize-none"
+                className="w-full p-2.5 sm:p-2 text-sm rounded-xl border border-gray-300 bg-white/50 focus:outline-none focus:ring-2 focus:ring-green-800 resize-none"
               ></textarea>
             </div>
-            <button type="submit" className="w-full bg-green-800 text-white font-bold py-2.5 rounded-xl hover:bg-green-900 transition-colors">
+            <button type="submit" className="w-full bg-green-800 text-white font-bold py-3 sm:py-2.5 rounded-xl hover:bg-green-900 transition-colors shadow-sm">
               저장하기
             </button>
           </form>
         </div>
 
-        {/* 프롬프트 리스트 출력 */}
-        <div className="lg:col-span-2 flex flex-col gap-4 max-h-[600px] overflow-y-auto custom-scrollbar pr-2">
+        <div className="lg:col-span-2 flex flex-col gap-4 max-h-[600px] overflow-y-auto custom-scrollbar pr-1 sm:pr-2">
           {prompts.map((prompt) => (
-            <div key={prompt.id} className="bg-white/70 backdrop-blur-2xl rounded-3xl p-5 shadow-sm border border-white/90 transition-all hover:bg-white/90">
-              <div className="flex justify-between items-start mb-2">
+            <div key={prompt.id} className="bg-white/70 backdrop-blur-2xl rounded-3xl p-4 sm:p-5 shadow-sm border border-white/90 transition-all hover:bg-white/90">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-2">
                 <div>
                   <span className="text-[10px] font-bold text-green-800 bg-green-100 px-2 py-1 rounded-md">{prompt.category}</span>
-                  <h4 className="text-md font-bold text-gray-900 mt-2">{prompt.title}</h4>
+                  <h4 className="text-sm sm:text-md font-bold text-gray-900 mt-1.5 sm:mt-2">{prompt.title}</h4>
                 </div>
                 <button 
                   onClick={() => copyToClipboard(prompt.content)}
-                  className="text-xs font-bold bg-gray-900 text-white px-3 py-1.5 rounded-lg hover:bg-gray-700 transition-colors shrink-0"
+                  className="text-xs font-bold bg-gray-900 text-white px-3 py-1.5 rounded-lg hover:bg-gray-700 transition-colors shrink-0 self-end sm:self-auto"
                 >
                   복사
                 </button>
               </div>
-              <p className="text-sm text-gray-600 mt-3 p-3 bg-white/50 rounded-xl border border-gray-100 whitespace-pre-wrap">
+              <p className="text-xs sm:text-sm text-gray-600 mt-3 p-3 bg-white/50 rounded-xl border border-gray-100 whitespace-pre-wrap break-words">
                 {prompt.content}
               </p>
             </div>
