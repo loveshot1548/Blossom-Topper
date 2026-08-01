@@ -8,6 +8,7 @@ import AiMarketing from './components/AiMarketing.jsx';
 import IntegrationHub from './components/IntegrationHub.jsx';
 import WeeklyReport from './components/WeeklyReport.jsx';
 import YearlyCalendar from './components/YearlyCalendar.jsx';
+import InstagramPrompts from './components/InstagramPrompts.jsx';
 
 // 상단 네비게이션 아이콘 세트
 const Icons = {
@@ -68,6 +69,7 @@ export default function App() {
     { id: 'ContentStudio', label: '콘텐츠 스튜디오', icon: <Icons.Studio /> },
     { id: 'AiMarketing', label: 'AI 마케팅', icon: <Icons.Marketing /> },
     { id: 'IntegrationHub', label: '연동 허브', icon: <Icons.Hub /> },
+    { id: 'InstagramPrompts', label: '인스타 프롬프트', icon: <Icons.Marketing /> },
     { id: 'WeeklyReport', label: '주간 리포트', icon: <Icons.Report /> },
     { id: 'YearlyCalendar', label: '연간 일정', icon: <Icons.Calendar /> }
   ];
@@ -89,6 +91,8 @@ export default function App() {
         return <YearlyCalendar schedule={yearlySchedule} />;
       default:
         return <HomeDashboard traffic={traffic} />;
+case 'InstagramPrompts':
+  return <InstagramPrompts />;
     }
   };
 
