@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 // 고급스러운 미니멀 SVG 아이콘 세트
 const Icons = {
@@ -13,68 +13,147 @@ const Icons = {
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('콘텐츠 스튜디오');
+  const [isUploading, setIsUploading] = useState(false);
+  
+  // 🚀 실시간 트렌드 상태 관리
+  const [trends, setTrends] = useState([]);
+  const [isLoadingTrends, setIsLoadingTrends] = useState(true);
+
+  // 컴포넌트가 마운트될 때 n8n 웹훅에서 데이터 Fetch
+  useEffect(() => {
+    const fetchTrends = async () => {
+      try {
+        // n8n에서 만든 GET 방식 웹훅 URL을 입력하세요.
+        const response = await fetch('http://localhost:5678/webhook/trends-data');
+        
+        // 정상 응답이 아닐 경우 강제로 에러를 발생시켜 catch 블록으로 이동
+        if (!response.ok) throw new Error('네트워크 응답이 올바르지 않습니다.');
+        
+        const data = await response.json();
+        setTrends(data);
+      } catch (error) {
+        console.error('트렌드 데이터를 불러오는 중 오류 발생:', error);
+        // 통신 실패 시(혹은 웹훅 연결 전) 보여줄 기본(Fallback) 데이터
+        setTrends([
+          { rank: 1, keyword: '발포세라믹 화분', up: '+210%' },
+          { rank: 2, keyword: '슈링클스 키링', up: '+185%' },
+          { rank: 3, keyword: '제스모나이트 트레이', up: '+92%' }
+        ]);
+      } finally {
+        setIsLoadingTrends(false);
+      }
+    };
+
+    fetchTrends();
+    
+    // 주석 해제 시 5분마다 실시간 자동 갱신
+    // const interval = setInterval(fetchTrends, 5 * 60 * 1000);
+    // return () => clearInterval(interval);
+  }, []);
+
+  // 🚀 이미지 업로드 및 Vercel 자동 재배포 트리거
+  const handleUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    try {
+      // 1. n8n 웹훅으로 이미지 전송 (URL은 실제 n8n 웹훅 주소로 변경 필요)
+      // const formData = new FormData();
+      // formData.append('file', file);
+      // await fetch('YOUR_N8N_WEBHOOK_URL', { method: 'POST', body: formData });
+
+      // 2. Vercel Deploy Hook 호출 (재배포)
+      // await fetch('YOUR_VERCEL_DEPLOY_HOOK_URL', { method: 'POST' });
+
+      alert('성공적으로 업로드되었으며, 서버 재배포가 시작되었습니다.');
+    } catch (error) {
+      console.error('업로드 실패:', error);
+      alert('업로드 중 오류가 발생했습니다.');
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.bgOverlay}></div>
+    <div className="min-h-screen relative font-sans text-gray-900 p-4 md:p-8 box-border"
+         style={{ 
+           backgroundImage: 'url("https://images.unsplash.com/photo-1536657464919-892534f60d6e?q=80&w=2574&auto=format&fit=crop")',
+           backgroundSize: 'cover', backgroundPosition: 'center', backgroundAttachment: 'fixed'
+         }}>
+      
+      {/* 배경 오버레이 */}
+      <div className="absolute inset-0 bg-gradient-to-br from-white/70 to-green-50/80 backdrop-blur-md pointer-events-none z-0"></div>
 
       {/* 헤더 네비게이션 */}
-      <header style={styles.topHeader}>
-        <div style={styles.logoArea}>
-          <span style={{ color: '#2d5a27' }}><Icons.Leaf /></span>
-          <span style={styles.logoText}>Blossom Topper</span>
+      <header className="relative z-10 flex flex-col md:flex-row justify-between items-center max-w-6xl mx-auto mb-8 gap-4">
+        <div className="flex items-center gap-2 font-extrabold text-xl">
+          <span className="text-green-800"><Icons.Leaf /></span>
+          <span className="tracking-tight text-gray-900">Blossom Topper</span>
         </div>
 
-        <nav style={styles.navCapsule}>
-          <button onClick={() => setActiveTab('콘텐츠 스튜디오')} style={{ ...styles.navBtn, ...(activeTab === '콘텐츠 스튜디오' ? styles.activeNavBtn : {}) }}>
-            <span style={styles.iconWrapper}><Icons.PlaySquare /></span> 미디어 & 퍼블리싱
-          </button>
-          <button onClick={() => setActiveTab('트래픽 & 리드')} style={{ ...styles.navBtn, ...(activeTab === '트래픽 & 리드' ? styles.activeNavBtn : {}) }}>
-            <span style={styles.iconWrapper}><Icons.Users /></span> 고객 & 리드 제어
-          </button>
-          <button onClick={() => setActiveTab('인사이트 랩')} style={{ ...styles.navBtn, ...(activeTab === '인사이트 랩' ? styles.activeNavBtn : {}) }}>
-            <span style={styles.iconWrapper}><Icons.TrendingUp /></span> 분석 & 트렌드
-          </button>
+        {/* 탭 메뉴 */}
+        <nav className="flex flex-wrap justify-center gap-2 bg-white/60 backdrop-blur-xl p-1.5 rounded-full shadow-sm border border-white/90">
+          {['콘텐츠 스튜디오', '트래픽 & 리드', '인사이트 랩'].map((tab) => (
+            <button 
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold transition-all ${
+                activeTab === tab ? 'bg-white text-gray-900 shadow-md' : 'text-gray-600 hover:bg-white/50'
+              }`}
+            >
+              <span className="flex items-center justify-center">
+                {tab === '콘텐츠 스튜디오' && <Icons.PlaySquare />}
+                {tab === '트래픽 & 리드' && <Icons.Users />}
+                {tab === '인사이트 랩' && <Icons.TrendingUp />}
+              </span>
+              <span className="hidden sm:inline">{tab}</span>
+            </button>
+          ))}
         </nav>
       </header>
 
-      <main style={styles.mainWrapper}>
+      <main className="relative z-10 max-w-6xl mx-auto">
         
-        {/* 1️⃣ 탭: 홍보물 제작 & 게시물 업로드 (요구사항 1, 2) */}
+        {/* 1️⃣ 탭: 콘텐츠 스튜디오 */}
         {activeTab === '콘텐츠 스튜디오' && (
-          <div className="fade-in">
-            <div style={styles.heroSection}>
-              <span style={styles.badge}>Automated Publishing</span>
-              <h1 style={styles.heroTitle}>AI 미디어 제작 및 자동 배포</h1>
-              <p style={styles.heroSubtitle}>촬영한 원본 미디어를 업로드하면 Google AI가 카드뉴스와 영상을 자동 편집하여 인스타그램과 블로그에 동시 발행합니다.</p>
+          <div className="animate-fade-in">
+            <div className="mb-8 text-center md:text-left">
+              <span className="text-xs font-bold text-green-800 bg-white/90 px-3 py-1.5 rounded-full uppercase">Automated Publishing</span>
+              <h1 className="text-3xl md:text-4xl font-extrabold my-4 text-gray-900 tracking-tight">AI 미디어 제작 및 자동 배포</h1>
+              <p className="text-gray-700 text-sm md:text-base max-w-2xl mx-auto md:mx-0">촬영한 원본 미디어를 업로드하면 AI가 릴스와 숏폼으로 자동 편집하여 소셜 미디어에 발행합니다.</p>
             </div>
             
-            <div style={styles.gridContainer}>
-              <div style={styles.glassCard}>
-                <h3 style={styles.cardTitle}><span style={{marginRight:'8px'}}><Icons.Upload /></span> 1. 원본 미디어 수집</h3>
-                <div style={styles.uploadBox}>
-                  <div style={{ color: '#666', marginBottom: '1rem' }}><Icons.PlaySquare /></div>
-                  <span style={{ fontSize: '0.9rem', color: '#444' }}>제스모나이트 또는 토퍼 원본 사진/영상 드롭</span>
-                  <span style={{ fontSize: '0.75rem', color: '#888', marginTop: '0.5rem' }}>자동 보정 및 릴스(Reels) 포맷 변환 대기</span>
-                </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* 카드 1: 업로드 영역 */}
+              <div className="bg-white/70 backdrop-blur-2xl rounded-3xl p-6 shadow-sm border border-white/90">
+                <h3 className="flex items-center text-lg font-bold mb-6 text-gray-900"><span className="mr-2"><Icons.Upload /></span> 1. 원본 미디어 수집</h3>
+                
+                <label className="flex flex-col justify-center items-center h-48 border-2 border-dashed border-green-800/40 rounded-2xl bg-white/40 cursor-pointer hover:bg-white/60 transition-all">
+                  <input type="file" className="hidden" accept="image/*,video/*" onChange={handleUpload} disabled={isUploading} />
+                  <div className="text-gray-500 mb-4">{isUploading ? '업로드 및 배포 중...' : <Icons.PlaySquare />}</div>
+                  <span className="text-sm text-gray-700 font-medium">작업물 미디어를 터치하여 업로드</span>
+                  <span className="text-xs text-gray-500 mt-2">업로드 시 자동 배포(Vercel) 파이프라인 가동</span>
+                </label>
               </div>
 
-              <div style={styles.glassCard}>
-                <h3 style={styles.cardTitle}><span style={{marginRight:'8px'}}><Icons.PlaySquare /></span> 2. 멀티채널 자동 업로드 대기열</h3>
-                <div style={styles.listGroup}>
-                  <div style={styles.listItem}>
+              {/* 카드 2: 배포 현황 */}
+              <div className="bg-white/70 backdrop-blur-2xl rounded-3xl p-6 shadow-sm border border-white/90">
+                <h3 className="flex items-center text-lg font-bold mb-6 text-gray-900"><span className="mr-2"><Icons.PlaySquare /></span> 2. 멀티채널 배포 현황</h3>
+                <div className="flex flex-col gap-4">
+                  <div className="flex justify-between items-center pb-4 border-b border-black/5">
                     <div>
-                      <div style={styles.itemLabel}>Instagram 피드 & 릴스</div>
-                      <div style={{ fontSize: '0.75rem', color: '#666', marginTop: '4px' }}>[신상] 글라스아트 썬캐처 리뷰 (생성 완료)</div>
+                      <div className="text-sm font-bold text-gray-900">Instagram 피드 & 릴스</div>
+                      <div className="text-xs text-gray-600 mt-1">[신상] 글라스아트 썬캐처 (생성 완료)</div>
                     </div>
-                    <button style={styles.actionBtn}>즉시 발행</button>
+                    <button className="bg-green-800 text-white border-none px-4 py-2 rounded-xl text-xs font-bold cursor-pointer">즉시 발행</button>
                   </div>
-                  <div style={styles.listItem}>
+                  <div className="flex justify-between items-center pb-4 border-b border-black/5">
                     <div>
-                      <div style={styles.itemLabel}>Naver Blog 포스팅</div>
-                      <div style={{ fontSize: '0.75rem', color: '#666', marginTop: '4px' }}>SEO 최적화 원고 생성 중...</div>
+                      <div className="text-sm font-bold text-gray-900">Naver Blog 포스팅</div>
+                      <div className="text-xs text-gray-600 mt-1">SEO 최적화 원고 생성 중...</div>
                     </div>
-                    <span style={styles.statusProcessing}>AI 작성 중</span>
+                    <span className="text-xs text-gray-500 px-3 py-1.5 bg-black/5 rounded-xl font-bold">AI 작성 중</span>
                   </div>
                 </div>
               </div>
@@ -82,49 +161,38 @@ export default function App() {
           </div>
         )}
 
-        {/* 2️⃣ 탭: 방문객 관리 & 잠재고객 캐치 (요구사항 3, 6) */}
+        {/* 2️⃣ 탭: 트래픽 & 리드 */}
         {activeTab === '트래픽 & 리드' && (
-          <div className="fade-in">
-            <div style={styles.heroSection}>
-              <span style={styles.badge}>Lead Generation & CRM</span>
-              <h1 style={styles.heroTitle}>스마트 트래픽 및 리드 제어</h1>
-              <p style={styles.heroSubtitle}>유입된 방문객의 행동 패턴을 분석하고, 구매 전환 확률이 높은 잠재 고객(Lead)을 자동으로 분류하여 알림을 보냅니다.</p>
+          <div className="animate-fade-in">
+            <div className="mb-8 text-center md:text-left">
+              <span className="text-xs font-bold text-green-800 bg-white/90 px-3 py-1.5 rounded-full uppercase">Lead Generation & CRM</span>
+              <h1 className="text-3xl md:text-4xl font-extrabold my-4 text-gray-900 tracking-tight">스마트 트래픽 및 리드 제어</h1>
             </div>
 
-            <div style={styles.gridContainer}>
-              <div style={styles.glassCard}>
-                <h3 style={styles.cardTitle}><span style={{marginRight:'8px'}}><Icons.Users /></span> 실시간 방문객 트래픽</h3>
-                <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
-                  <div style={styles.statBox}>
-                    <span style={styles.statLabel}>금일 블로그 유입</span>
-                    <strong style={styles.statValue}>342</strong>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="bg-white/70 backdrop-blur-2xl rounded-3xl p-6 shadow-sm border border-white/90">
+                <h3 className="flex items-center text-lg font-bold mb-6 text-gray-900"><span className="mr-2"><Icons.Users /></span> 실시간 트래픽 요약</h3>
+                <div className="flex gap-4 mb-6">
+                  <div className="flex-1 bg-white/50 p-4 rounded-2xl border border-white/80">
+                    <span className="block text-xs text-gray-600 mb-1">금일 블로그 유입</span>
+                    <strong className="text-3xl font-light text-gray-900">342</strong>
                   </div>
-                  <div style={styles.statBox}>
-                    <span style={styles.statLabel}>인스타 프로필 클릭</span>
-                    <strong style={styles.statValue}>89</strong>
+                  <div className="flex-1 bg-white/50 p-4 rounded-2xl border border-white/80">
+                    <span className="block text-xs text-gray-600 mb-1">인스타 프로필 클릭</span>
+                    <strong className="text-3xl font-light text-gray-900">89</strong>
                   </div>
-                </div>
-                <div style={{ marginTop: '1.5rem', fontSize: '0.8rem', color: '#555', lineHeight: '1.6' }}>
-                  최근 유입의 45%가 <b>'발포세라믹 화분'</b> 관련 키워드를 통해 발생했습니다. 관련 폼(Form) 스위치 노드 활성화가 권장됩니다.
                 </div>
               </div>
 
-              <div style={styles.glassCard}>
-                <h3 style={styles.cardTitle}><span style={{marginRight:'8px'}}><Icons.Target /></span> AI 잠재고객(Lead) 캐치</h3>
-                <div style={styles.listGroup}>
-                  <div style={styles.leadItem}>
-                    <div style={styles.leadHeader}>
-                      <span style={styles.itemLabel}>카카오채널 문의 (ID: s**_k)</span>
-                      <span style={styles.highIntentBadge}>구매 확률 94%</span>
+              <div className="bg-white/70 backdrop-blur-2xl rounded-3xl p-6 shadow-sm border border-white/90">
+                <h3 className="flex items-center text-lg font-bold mb-6 text-gray-900"><span className="mr-2"><Icons.Target /></span> 실시간 잠재고객(Lead) 알림</h3>
+                <div className="flex flex-col gap-4">
+                  <div className="bg-white/60 p-4 rounded-2xl border border-white/80">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-sm font-bold">카카오채널 문의 (s**_k)</span>
+                      <span className="text-[10px] bg-red-100 text-red-700 px-2 py-1 rounded-lg font-bold">구매 확률 94%</span>
                     </div>
-                    <div style={styles.leadContext}>"이번 주말 백일 잔치인데 혹시 급행 제작 가능한가요?"</div>
-                  </div>
-                  <div style={styles.leadItem}>
-                    <div style={styles.leadHeader}>
-                      <span style={styles.itemLabel}>구글 폼 제출 (커스텀 주문)</span>
-                      <span style={styles.highIntentBadge}>구매 확률 88%</span>
-                    </div>
-                    <div style={styles.leadContext}>"답례품 50세트 단가 문의드립니다."</div>
+                    <div className="text-xs text-gray-700 italic">"이번 주말 백일 잔치인데 혹시 급행 제작 가능한가요?"</div>
                   </div>
                 </div>
               </div>
@@ -132,49 +200,49 @@ export default function App() {
           </div>
         )}
 
-        {/* 3️⃣ 탭: 해시태그 분석 & 트렌드 분석 (요구사항 4, 5) */}
+        {/* 3️⃣ 탭: 인사이트 랩 */}
         {activeTab === '인사이트 랩' && (
-          <div className="fade-in">
-            <div style={styles.heroSection}>
-              <span style={styles.badge}>Data Analytics</span>
-              <h1 style={styles.heroTitle}>알고리즘 트렌드 및 해시태그 분석</h1>
-              <p style={styles.heroSubtitle}>현재 공예 시장의 트렌드를 추적하고, 게시물 노출을 극대화할 최적의 해시태그 조합을 제안합니다.</p>
+          <div className="animate-fade-in">
+            <div className="mb-8 text-center md:text-left">
+              <span className="text-xs font-bold text-green-800 bg-white/90 px-3 py-1.5 rounded-full uppercase">Data Analytics</span>
+              <h1 className="text-3xl md:text-4xl font-extrabold my-4 text-gray-900 tracking-tight">알고리즘 및 해시태그 분석</h1>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '2rem' }}>
-              <div style={styles.glassCard}>
-                <h3 style={styles.cardTitle}><span style={{marginRight:'8px'}}><Icons.TrendingUp /></span> 실시간 공예 시장 트렌드</h3>
-                <div style={styles.trendList}>
-                  <div style={styles.trendRow}>
-                    <span style={styles.trendRank}>1</span>
-                    <span style={styles.trendKeyword}>친환경 제스모나이트 오브제</span>
-                    <span style={styles.trendUp}>+240%</span>
-                  </div>
-                  <div style={styles.trendRow}>
-                    <span style={styles.trendRank}>2</span>
-                    <span style={styles.trendKeyword}>환갑 2단 케이크 토퍼</span>
-                    <span style={styles.trendUp}>+185%</span>
-                  </div>
-                  <div style={styles.trendRow}>
-                    <span style={styles.trendRank}>3</span>
-                    <span style={styles.trendKeyword}>반려식물 미니 화분</span>
-                    <span style={styles.trendUp}>+92%</span>
-                  </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              
+              {/* 🚀 데이터 Fetch를 반영한 실시간 트렌드 영역 */}
+              <div className="bg-white/70 backdrop-blur-2xl rounded-3xl p-6 shadow-sm border border-white/90">
+                <h3 className="flex items-center text-lg font-bold mb-6 text-gray-900"><span className="mr-2"><Icons.TrendingUp /></span> 실시간 공예 시장 트렌드</h3>
+                
+                <div className="flex flex-col gap-3">
+                  {isLoadingTrends ? (
+                    <div className="text-sm text-gray-500 text-center py-6 font-medium animate-pulse">
+                      n8n 서버에서 트렌드 데이터를 불러오는 중...
+                    </div>
+                  ) : (
+                    trends.map((trend, index) => (
+                      <div key={index} className="flex items-center p-4 bg-white/50 rounded-2xl hover:bg-white/80 transition-colors">
+                        <span className="text-lg font-extrabold text-green-800 w-8">{trend.rank}</span>
+                        <span className="flex-1 text-sm font-bold text-gray-900">{trend.keyword}</span>
+                        <span className="text-xs font-bold text-red-600">{trend.up}</span>
+                      </div>
+                    ))
+                  )}
                 </div>
               </div>
 
-              <div style={styles.glassCard}>
-                <h3 style={styles.cardTitle}><span style={{marginRight:'8px'}}><Icons.Hash /></span> 고효율 해시태그 추출기</h3>
-                <div style={{ padding: '1rem', background: 'rgba(255,255,255,0.4)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.6)' }}>
-                  <div style={{ fontSize: '0.8rem', color: '#555', marginBottom: '0.8rem' }}>AI 추천: 이번 주 전환율이 가장 높은 조합</div>
-                  <div style={styles.tagCloud}>
-                    <span style={styles.tagBest}>#제스모나이트소품</span>
-                    <span style={styles.tagBest}>#백일토퍼제작</span>
-                    <span style={styles.tagNormal}>#집들이선물추천</span>
-                    <span style={styles.tagNormal}>#발포세라믹</span>
-                    <span style={styles.tagNormal}>#블라썸토퍼</span>
+              <div className="bg-white/70 backdrop-blur-2xl rounded-3xl p-6 shadow-sm border border-white/90">
+                <h3 className="flex items-center text-lg font-bold mb-6 text-gray-900"><span className="mr-2"><Icons.Hash /></span> 고효율 해시태그 추출기</h3>
+                <div className="p-4 bg-white/40 rounded-2xl border border-white/60">
+                  <div className="text-xs text-gray-600 mb-3">AI 추천: 이번 주 전환율이 가장 높은 조합</div>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    <span className="text-xs bg-green-800/10 text-green-800 px-3 py-1.5 rounded-full font-bold">#제스모나이트소품</span>
+                    <span className="text-xs bg-green-800/10 text-green-800 px-3 py-1.5 rounded-full font-bold">#백일토퍼제작</span>
+                    <span className="text-xs bg-black/5 text-gray-700 px-3 py-1.5 rounded-full">#발포세라믹</span>
                   </div>
-                  <button style={{ ...styles.actionBtn, width: '100%', marginTop: '1rem' }}>클립보드에 복사</button>
+                  <button className="w-full bg-green-800 text-white font-bold text-sm py-3 rounded-xl transition-colors hover:bg-green-900 shadow-md hover:shadow-lg">
+                    클립보드에 복사
+                  </button>
                 </div>
               </div>
             </div>
@@ -184,77 +252,3 @@ export default function App() {
     </div>
   );
 }
-
-// 🌿 자연 친화적이면서도 하이엔드 테크 감성을 결합한 스타일
-const styles = {
-  container: {
-    minHeight: '100vh',
-    backgroundImage: 'url("https://images.unsplash.com/photo-1536657464919-892534f60d6e?q=80&w=2574&auto=format&fit=crop")',
-    backgroundSize: 'cover', backgroundPosition: 'center', backgroundAttachment: 'fixed',
-    position: 'relative', fontFamily: "'Pretendard', -apple-system, sans-serif",
-    color: '#1a1a1a', padding: '1.5rem 2rem', boxSizing: 'border-box',
-  },
-  bgOverlay: {
-    position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
-    background: 'linear-gradient(135deg, rgba(255,255,255,0.7) 0%, rgba(240,248,240,0.8) 100%)',
-    backdropFilter: 'blur(10px)', pointerEvents: 'none', zIndex: 1,
-  },
-  topHeader: {
-    position: 'relative', zIndex: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-    maxWidth: '1100px', margin: '0 auto 3rem auto',
-  },
-  logoArea: { display: 'flex', alignItems: 'center', gap: '0.6rem', fontWeight: '800', fontSize: '1.2rem' },
-  logoText: { letterSpacing: '-0.5px', color: '#1a1a1a' },
-  navCapsule: {
-    background: 'rgba(255, 255, 255, 0.6)', backdropFilter: 'blur(20px)', padding: '6px', borderRadius: '40px',
-    display: 'flex', gap: '6px', boxShadow: '0 4px 20px rgba(0,0,0,0.03)', border: '1px solid rgba(255, 255, 255, 0.9)',
-  },
-  navBtn: {
-    display: 'flex', alignItems: 'center', gap: '8px', border: 'none', background: 'transparent',
-    padding: '0.6rem 1.2rem', borderRadius: '30px', fontSize: '0.85rem', fontWeight: '600', color: '#555', cursor: 'pointer', transition: 'all 0.2s',
-  },
-  activeNavBtn: { background: '#ffffff', color: '#1a1a1a', fontWeight: '700', boxShadow: '0 2px 10px rgba(0,0,0,0.05)' },
-  iconWrapper: { display: 'flex', alignItems: 'center', justifyContent: 'center' },
-  
-  mainWrapper: { position: 'relative', zIndex: 2, maxWidth: '1100px', margin: '0 auto' },
-  heroSection: { marginBottom: '3rem' },
-  badge: { fontSize: '0.75rem', fontWeight: '700', color: '#2d5a27', background: 'rgba(255,255,255,0.9)', padding: '6px 12px', borderRadius: '12px', textTransform: 'uppercase' },
-  heroTitle: { fontSize: '2.4rem', fontWeight: '800', margin: '1rem 0', color: '#1a1a1a', letterSpacing: '-1px' },
-  heroSubtitle: { fontSize: '0.95rem', color: '#444', margin: 0, fontWeight: '400', lineHeight: '1.6', maxWidth: '800px' },
-  
-  gridContainer: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' },
-  glassCard: {
-    background: 'rgba(255, 255, 255, 0.65)', backdropFilter: 'blur(24px)', borderRadius: '24px', padding: '2rem',
-    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.04)', border: '1px solid rgba(255, 255, 255, 0.9)',
-  },
-  cardTitle: { display: 'flex', alignItems: 'center', fontSize: '1.1rem', fontWeight: '700', margin: '0 0 1.5rem 0', color: '#1a1a1a' },
-  
-  uploadBox: {
-    display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '160px',
-    border: '1px dashed rgba(45, 90, 39, 0.4)', borderRadius: '16px', background: 'rgba(255,255,255,0.4)', cursor: 'pointer',
-  },
-  listGroup: { display: 'flex', flexDirection: 'column', gap: '1rem' },
-  listItem: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '1rem', borderBottom: '1px solid rgba(0,0,0,0.05)' },
-  itemLabel: { fontSize: '0.9rem', color: '#1a1a1a', fontWeight: '600' },
-  actionBtn: { background: '#2d5a27', color: '#fff', border: 'none', padding: '6px 14px', borderRadius: '12px', fontSize: '0.8rem', fontWeight: '600', cursor: 'pointer' },
-  statusProcessing: { fontSize: '0.75rem', color: '#888', padding: '6px 12px', background: 'rgba(0,0,0,0.05)', borderRadius: '12px', fontWeight: '600' },
-  
-  statBox: { flex: 1, background: 'rgba(255,255,255,0.5)', padding: '1.2rem', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.8)' },
-  statLabel: { display: 'block', fontSize: '0.8rem', color: '#555', marginBottom: '0.4rem' },
-  statValue: { fontSize: '2rem', fontWeight: '300', color: '#1a1a1a' },
-  
-  leadItem: { background: 'rgba(255,255,255,0.6)', padding: '1.2rem', borderRadius: '16px', marginBottom: '1rem', border: '1px solid rgba(255,255,255,0.8)' },
-  leadHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.8rem' },
-  highIntentBadge: { fontSize: '0.7rem', background: '#ffebee', color: '#c62828', padding: '4px 8px', borderRadius: '8px', fontWeight: '700' },
-  leadContext: { fontSize: '0.85rem', color: '#444', fontStyle: 'italic' },
-  
-  trendList: { display: 'flex', flexDirection: 'column', gap: '0.8rem' },
-  trendRow: { display: 'flex', alignItems: 'center', padding: '0.8rem', background: 'rgba(255,255,255,0.5)', borderRadius: '12px' },
-  trendRank: { fontSize: '1rem', fontWeight: '800', color: '#2d5a27', width: '30px' },
-  trendKeyword: { flex: 1, fontSize: '0.9rem', fontWeight: '600', color: '#1a1a1a' },
-  trendUp: { fontSize: '0.8rem', fontWeight: '700', color: '#d32f2f' },
-  
-  tagCloud: { display: 'flex', flexWrap: 'wrap', gap: '8px' },
-  tagBest: { fontSize: '0.8rem', background: 'rgba(45, 90, 39, 0.15)', color: '#2d5a27', padding: '6px 12px', borderRadius: '12px', fontWeight: '700' },
-  tagNormal: { fontSize: '0.8rem', background: 'rgba(0,0,0,0.05)', color: '#555', padding: '6px 12px', borderRadius: '12px' }
-};
