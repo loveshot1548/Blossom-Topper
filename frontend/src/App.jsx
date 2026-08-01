@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-// 고급스러운 미니멀 SVG 아이콘 세트 (Book 아이콘 추가)
+// 고급스러운 미니멀 SVG 아이콘 세트
 const Icons = {
   Leaf: () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>,
   PlaySquare: () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><polygon points="10 8 16 12 10 16 10 8"/></svg>,
@@ -16,56 +16,53 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('콘텐츠 스튜디오');
   
   // 🚀 [기능 1] 이미지 업로드 시뮬레이션 상태
-  const [uploadState, setUploadState] = useState('idle'); // idle, uploading, ai_processing, done
+  const [uploadState, setUploadState] = useState('idle'); 
   const [trends, setTrends] = useState([]);
   
-  // 🚀 [기능 2] 프롬프트 대백과 사전 상태
+  // 🚀 [기능 2] 2026 트렌드 기반 프롬프트 대백과 사전 상태 업데이트
   const [prompts, setPrompts] = useState([
-    { id: 1, category: 'SNS 캡션', title: '슈링클스 키링 인스타 릴스 대본', content: '공방에서 직접 구운 슈링클스 키링 제작 과정을 보여주는 릴스 대본을 작성해줘. 시각적인 변화에 집중해서 감성적인 톤으로 부탁해.' },
-    { id: 2, category: '블로그 SEO', title: '발포세라믹 화분 원데이 클래스 모객', content: '발포세라믹 화분 만들기 원데이 클래스를 홍보하는 네이버 블로그 포스팅을 작성해줘. 초보자도 쉽게 할 수 있다는 점을 강조해줘.' },
-    { id: 3, category: '디자인 에셋', title: 'Canva 썸네일 생성용 프롬프트', content: '봄 느낌이 나는 파스텔 톤의 공방 클래스 모집 썸네일 카피를 3가지 제안해줘. 짧고 강렬하게!' }
+    { id: 1, category: 'SNS 캡션', title: '제스모나이트 트레이 릴스 대본', content: '공방에서 만든 제스모나이트 트레이 제작 과정을 릴스로 올릴 거야. 마블링과 테라조 기법의 시각적 아름다움을 강조하고, #JesmoniteArt #홈데코소품 해시태그를 넣어서 감성적인 톤으로 대본을 작성해줘.' },
+    { id: 2, category: '블로그 SEO', title: '발포세라믹 업사이클링 클래스 모객', content: '2026년 친환경 트렌드인 발포세라믹 오브제 만들기 원데이 클래스를 홍보하는 네이버 블로그 포스팅을 작성해줘. 업사이클링 트렌드와 결합해 초보자도 쉽게 참여할 수 있음을 강조하고, 검색 유입을 위해 #EcoCraft #발포세라믹 키워드를 활용해줘.' },
+    { id: 3, category: '디자인 에셋', title: '맞춤형 기념일 토퍼 홍보 문구', content: '돌잔치 및 웨딩 맞춤 제작 케이크 토퍼 홍보를 위한 인스타그램 피드 카피를 3가지 제안해줘. 이니셜 커스터마이징이 가능하다는 점을 어필하고 짧고 강렬하게 작성해줘!' }
   ]);
   const [newPrompt, setNewPrompt] = useState({ category: 'SNS 캡션', title: '', content: '' });
 
-  // 트렌드 기본 데이터 로드 (서버 통신 없이 로컬 데이터 사용)
+  // 🚀 2026년 상반기 공예 트렌드 Top 10 데이터 로드
   useEffect(() => {
     setTrends([
-      { rank: 1, keyword: '발포세라믹 화분', up: '+210%' },
-      { rank: 2, keyword: '슈링클스 키링', up: '+185%' },
-      { rank: 3, keyword: '제스모나이트 트레이', up: '+92%' }
+      { rank: 1, keyword: '제스모나이트 트레이/화분', detail: '감각적 인테리어 소품, 마블링 기법 인기', tag: '해시태그 급증' },
+      { rank: 2, keyword: '글라스아트 무드등', detail: '투명감·빛 활용, 선물용 수요 ↑', tag: '리뷰 활발' },
+      { rank: 3, keyword: '토퍼 케이크 데코', detail: '맞춤 제작·이니셜·웨딩/돌잔치 수요 폭발', tag: '수요 폭발' },
+      { rank: 4, keyword: '발포세라믹 오브제', detail: '친환경·질감 표현, 업사이클링 결합', tag: 'DIY 인기' },
+      { rank: 5, keyword: '원데이 클래스', detail: '소규모·프라이빗 클래스 선호', tag: '예약 증가' },
+      { rank: 6, keyword: '맞춤 제작 (Custom)', detail: '이름·컬러·문양 커스터마이즈', tag: 'MZ 픽' },
+      { rank: 7, keyword: '테라조 패턴', detail: '인테리어 블로그·카페에서 인기', tag: '트렌드' },
+      { rank: 8, keyword: '업사이클링 공예', detail: '친환경·윤리적 제작 강조', tag: 'Eco Craft' },
+      { rank: 9, keyword: '힙트래디션', detail: '전통 기법 + 현대 디자인 융합', tag: 'K-Craft' },
+      { rank: 10, keyword: '수익형 취미', detail: '작품 판매 및 강사 전환', tag: '창업 후기' }
     ]);
   }, []);
 
-  // 🚀 업로드 시뮬레이션 실행 함수
   const handleSimulatedUpload = (e) => {
     const file = e.target.files[0];
     if (!file) return;
-
-    // 1단계: 업로드 시작
     setUploadState('uploading');
-    
-    // 2단계: 1.5초 후 AI 처리 중으로 변경
     setTimeout(() => {
       setUploadState('ai_processing');
-      
-      // 3단계: 2초 후 완료 상태로 변경
       setTimeout(() => {
         setUploadState('done');
-        setTimeout(() => setUploadState('idle'), 4000); // 4초 뒤 원래대로 복귀
+        setTimeout(() => setUploadState('idle'), 4000); 
       }, 2000);
     }, 1500);
   };
 
-  // 🚀 프롬프트 추가 함수
   const handleAddPrompt = (e) => {
     e.preventDefault();
     if (!newPrompt.title || !newPrompt.content) return;
-    
     setPrompts([{ ...newPrompt, id: Date.now() }, ...prompts]);
-    setNewPrompt({ category: 'SNS 캡션', title: '', content: '' }); // 폼 초기화
+    setNewPrompt({ category: 'SNS 캡션', title: '', content: '' }); 
   };
 
-  // 🚀 텍스트 복사 함수
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text);
     alert('프롬프트가 클립보드에 복사되었습니다!');
@@ -78,17 +75,14 @@ export default function App() {
            backgroundSize: 'cover', backgroundPosition: 'center', backgroundAttachment: 'fixed'
          }}>
       
-      {/* 배경 오버레이 */}
-      <div className="absolute inset-0 bg-gradient-to-br from-white/70 to-green-50/80 backdrop-blur-md pointer-events-none z-0"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-white/80 to-green-50/90 backdrop-blur-md pointer-events-none z-0"></div>
 
-      {/* 헤더 네비게이션 */}
       <header className="relative z-10 flex flex-col md:flex-row justify-between items-center max-w-6xl mx-auto mb-8 gap-4">
         <div className="flex items-center gap-2 font-extrabold text-xl">
           <span className="text-green-800"><Icons.Leaf /></span>
           <span className="tracking-tight text-gray-900">Blossom Topper</span>
         </div>
 
-        {/* 탭 메뉴 */}
         <nav className="flex flex-wrap justify-center gap-2 bg-white/60 backdrop-blur-xl p-1.5 rounded-full shadow-sm border border-white/90">
           {['콘텐츠 스튜디오', '트래픽 & 리드', '인사이트 랩', '프롬프트 사전'].map((tab) => (
             <button 
@@ -112,7 +106,7 @@ export default function App() {
 
       <main className="relative z-10 max-w-6xl mx-auto">
         
-        {/* 1️⃣ 탭: 콘텐츠 스튜디오 (시뮬레이션 적용) */}
+        {/* 1️⃣ 탭: 콘텐츠 스튜디오 */}
         {activeTab === '콘텐츠 스튜디오' && (
           <div className="animate-fade-in">
             <div className="mb-8 text-center md:text-left">
@@ -122,7 +116,6 @@ export default function App() {
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* 업로드 시뮬레이션 영역 */}
               <div className="bg-white/70 backdrop-blur-2xl rounded-3xl p-6 shadow-sm border border-white/90">
                 <h3 className="flex items-center text-lg font-bold mb-6 text-gray-900"><span className="mr-2"><Icons.Upload /></span> 1. 원본 미디어 수집</h3>
                 
@@ -146,14 +139,13 @@ export default function App() {
                 </label>
               </div>
 
-              {/* 배포 현황 */}
               <div className="bg-white/70 backdrop-blur-2xl rounded-3xl p-6 shadow-sm border border-white/90">
                 <h3 className="flex items-center text-lg font-bold mb-6 text-gray-900"><span className="mr-2"><Icons.PlaySquare /></span> 2. 멀티채널 배포 현황</h3>
                 <div className="flex flex-col gap-4">
                   <div className="flex justify-between items-center pb-4 border-b border-black/5">
                     <div>
                       <div className="text-sm font-bold text-gray-900">Instagram 피드 & 릴스</div>
-                      <div className="text-xs text-gray-600 mt-1">[신상] 글라스아트 썬캐처 (생성 완료)</div>
+                      <div className="text-xs text-gray-600 mt-1">[신상] 발포세라믹 오브제 (생성 완료)</div>
                     </div>
                     <button className="bg-green-800 text-white border-none px-4 py-2 rounded-xl text-xs font-bold cursor-pointer hover:bg-green-900">즉시 발행</button>
                   </div>
@@ -174,7 +166,7 @@ export default function App() {
           </div>
         )}
 
-        {/* 2️⃣ 탭: 트래픽 & 리드 (완전 복구됨) */}
+        {/* 2️⃣ 탭: 트래픽 & 리드 */}
         {activeTab === '트래픽 & 리드' && (
           <div className="animate-fade-in">
             <div className="mb-8 text-center md:text-left">
@@ -205,7 +197,7 @@ export default function App() {
                       <span className="text-sm font-bold">카카오채널 문의 (s**_k)</span>
                       <span className="text-[10px] bg-red-100 text-red-700 px-2 py-1 rounded-lg font-bold">구매 확률 94%</span>
                     </div>
-                    <div className="text-xs text-gray-700 italic">"이번 주말 백일 잔치인데 혹시 급행 제작 가능한가요?"</div>
+                    <div className="text-xs text-gray-700 italic">"이번 주말 돌잔치인데 맞춤 토퍼 급행 제작 가능한가요?"</div>
                   </div>
                 </div>
               </div>
@@ -213,43 +205,73 @@ export default function App() {
           </div>
         )}
 
-        {/* 3️⃣ 탭: 인사이트 랩 (완전 복구됨) */}
+        {/* 3️⃣ 탭: 인사이트 랩 (2026 트렌드 완벽 적용!) */}
         {activeTab === '인사이트 랩' && (
           <div className="animate-fade-in">
             <div className="mb-8 text-center md:text-left">
               <span className="text-xs font-bold text-green-800 bg-white/90 px-3 py-1.5 rounded-full uppercase">Data Analytics</span>
-              <h1 className="text-3xl md:text-4xl font-extrabold my-4 text-gray-900 tracking-tight">알고리즘 및 해시태그 분석</h1>
+              <h1 className="text-3xl md:text-4xl font-extrabold my-4 text-gray-900 tracking-tight">2026 공예 트렌드 & 해시태그 분석</h1>
+              <p className="text-gray-700 text-sm md:text-base mt-2">상반기 공예 트렌드는 ‘인테리어 소품 중심의 감각적 공예’와 ‘SNS 확산형 키워드’가 핵심입니다.</p>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               
-              {/* 실시간 공예 시장 트렌드 */}
-              <div className="bg-white/70 backdrop-blur-2xl rounded-3xl p-6 shadow-sm border border-white/90">
-                <h3 className="flex items-center text-lg font-bold mb-6 text-gray-900"><span className="mr-2"><Icons.TrendingUp /></span> 실시간 공예 시장 트렌드</h3>
+              {/* 📊 2026 상반기 공예 시장 트렌드 Top 10 */}
+              <div className="bg-white/70 backdrop-blur-2xl rounded-3xl p-6 shadow-sm border border-white/90 h-[500px] overflow-y-auto custom-scrollbar">
+                <h3 className="flex items-center text-lg font-bold mb-6 text-gray-900 sticky top-0 bg-white/90 backdrop-blur-md p-2 rounded-xl z-10">
+                  <span className="mr-2"><Icons.TrendingUp /></span> 2026 공예 트렌드 Top 10
+                </h3>
                 
-                <div className="flex flex-col gap-3">
-                  {trends.map((trend, index) => (
-                    <div key={index} className="flex items-center p-4 bg-white/50 rounded-2xl hover:bg-white/80 transition-colors">
-                      <span className="text-lg font-extrabold text-green-800 w-8">{trend.rank}</span>
-                      <span className="flex-1 text-sm font-bold text-gray-900">{trend.keyword}</span>
-                      <span className="text-xs font-bold text-red-600">{trend.up}</span>
+                <div className="flex flex-col gap-3 mt-4">
+                  {trends.map((trend) => (
+                    <div key={trend.rank} className="flex flex-col p-4 bg-white/50 rounded-2xl hover:bg-white/80 transition-colors border border-white/60">
+                      <div className="flex items-center justify-between mb-1">
+                        <div className="flex items-center">
+                          <span className="text-lg font-extrabold text-green-800 w-8">{trend.rank}</span>
+                          <span className="text-sm font-bold text-gray-900">{trend.keyword}</span>
+                        </div>
+                        <span className="text-[10px] font-bold bg-red-50 text-red-600 px-2 py-1 rounded-md">{trend.tag}</span>
+                      </div>
+                      <span className="text-xs text-gray-600 pl-8">{trend.detail}</span>
                     </div>
                   ))}
                 </div>
               </div>
 
-              <div className="bg-white/70 backdrop-blur-2xl rounded-3xl p-6 shadow-sm border border-white/90">
-                <h3 className="flex items-center text-lg font-bold mb-6 text-gray-900"><span className="mr-2"><Icons.Hash /></span> 고효율 해시태그 추출기</h3>
-                <div className="p-4 bg-white/40 rounded-2xl border border-white/60">
-                  <div className="text-xs text-gray-600 mb-3">AI 추천: 이번 주 전환율이 가장 높은 조합</div>
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    <span className="text-xs bg-green-800/10 text-green-800 px-3 py-1.5 rounded-full font-bold">#제스모나이트소품</span>
-                    <span className="text-xs bg-green-800/10 text-green-800 px-3 py-1.5 rounded-full font-bold">#백일토퍼제작</span>
-                    <span className="text-xs bg-black/5 text-gray-700 px-3 py-1.5 rounded-full">#발포세라믹</span>
+              {/* 💡 2026 하반기 추천 해시태그 */}
+              <div className="flex flex-col gap-6">
+                <div className="bg-white/70 backdrop-blur-2xl rounded-3xl p-6 shadow-sm border border-white/90">
+                  <h3 className="flex items-center text-lg font-bold mb-4 text-gray-900"><span className="mr-2"><Icons.Hash /></span> 하반기 고효율 해시태그 세트</h3>
+                  <p className="text-xs text-gray-600 mb-4">비주얼 중심의 인스타그램과 DIY·창업형 블로그 키워드를 공략하세요.</p>
+                  
+                  <div className="space-y-4">
+                    <div className="p-4 bg-white/40 rounded-2xl border border-white/60">
+                      <div className="text-xs font-bold text-gray-800 mb-2">🎨 제스모나이트 & 글라스아트 (인스타 추천)</div>
+                      <div className="flex flex-wrap gap-2 mb-2">
+                        <span className="text-xs bg-green-800/10 text-green-800 px-3 py-1.5 rounded-full font-bold">#JesmoniteArt</span>
+                        <span className="text-xs bg-green-800/10 text-green-800 px-3 py-1.5 rounded-full font-bold">#GlassArtLamp</span>
+                        <span className="text-xs bg-black/5 text-gray-700 px-3 py-1.5 rounded-full">#DIY인테리어</span>
+                      </div>
+                    </div>
+
+                    <div className="p-4 bg-white/40 rounded-2xl border border-white/60">
+                      <div className="text-xs font-bold text-gray-800 mb-2">🌱 발포세라믹 & 업사이클링 (블로그 추천)</div>
+                      <div className="flex flex-wrap gap-2 mb-2">
+                        <span className="text-xs bg-green-800/10 text-green-800 px-3 py-1.5 rounded-full font-bold">#EcoCraft</span>
+                        <span className="text-xs bg-green-800/10 text-green-800 px-3 py-1.5 rounded-full font-bold">#친환경공예</span>
+                        <span className="text-xs bg-black/5 text-gray-700 px-3 py-1.5 rounded-full">#발포세라믹</span>
+                      </div>
+                    </div>
+
+                    <div className="p-4 bg-white/40 rounded-2xl border border-white/60">
+                      <div className="text-xs font-bold text-gray-800 mb-2">📈 수익형 창업 & 트렌드 확산형</div>
+                      <div className="flex flex-wrap gap-2 mb-3">
+                        <span className="text-xs bg-blue-800/10 text-blue-800 px-3 py-1.5 rounded-full font-bold">#수익형취미</span>
+                        <span className="text-xs bg-blue-800/10 text-blue-800 px-3 py-1.5 rounded-full font-bold">#원데이클래스</span>
+                        <span className="text-xs bg-black/5 text-gray-700 px-3 py-1.5 rounded-full">#맞춤토퍼</span>
+                      </div>
+                    </div>
                   </div>
-                  <button className="w-full bg-green-800 text-white font-bold text-sm py-3 rounded-xl transition-colors hover:bg-green-900 shadow-md hover:shadow-lg">
-                    클립보드에 복사
-                  </button>
                 </div>
               </div>
             </div>
@@ -266,8 +288,6 @@ export default function App() {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              
-              {/* 프롬프트 입력 폼 */}
               <div className="lg:col-span-1 bg-white/70 backdrop-blur-2xl rounded-3xl p-6 shadow-sm border border-white/90 h-fit">
                 <h3 className="text-lg font-bold mb-4 text-gray-900">새 프롬프트 추가</h3>
                 <form onSubmit={handleAddPrompt} className="flex flex-col gap-4">
@@ -288,7 +308,7 @@ export default function App() {
                     <label className="block text-xs font-bold text-gray-700 mb-1">제목 (용도)</label>
                     <input 
                       type="text" 
-                      placeholder="예: 백일토퍼 인스타 해시태그 생성"
+                      placeholder="예: 맞춤 토퍼 인스타 해시태그 생성"
                       value={newPrompt.title}
                       onChange={(e) => setNewPrompt({...newPrompt, title: e.target.value})}
                       className="w-full p-2 text-sm rounded-xl border border-gray-300 bg-white/50 focus:outline-none focus:ring-2 focus:ring-green-800"
@@ -310,7 +330,6 @@ export default function App() {
                 </form>
               </div>
 
-              {/* 저장된 프롬프트 리스트 */}
               <div className="lg:col-span-2 flex flex-col gap-4">
                 {prompts.map((prompt) => (
                   <div key={prompt.id} className="bg-white/70 backdrop-blur-2xl rounded-3xl p-5 shadow-sm border border-white/90 transition-all hover:bg-white/90">
@@ -332,7 +351,6 @@ export default function App() {
                   </div>
                 ))}
               </div>
-
             </div>
           </div>
         )}
