@@ -8,7 +8,7 @@ import WeeklyReport from './components/WeeklyReport.jsx';
 import YearlyCalendar from './components/YearlyCalendar.jsx';
 import InstagramPrompts from './components/InstagramPrompts.jsx';
 import SocialMonitor from './components/SocialMonitor.jsx';
-import AiPromptBook from './components/AiPromptBook.jsx'; // 👈 새로 창설된 공방 수익화 프롬프트북 페이지
+import AiPromptBook from './components/AiPromptBook.jsx';
 
 const Icons = {
   Leaf: () => <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>,
@@ -62,7 +62,8 @@ export default function App() {
 
   const tabs = [
     { id: 'HomeDashboard', label: '대시보드', icon: <Icons.Home /> },
-    { id: 'AiPromptBook', label: 'AI 프롬프트 20선', icon: <Icons.Book /> }, // 👈 새로 추가된 수익화 프롬프트북 탭
+    { id: 'AiPromptBook', label: 'AI 프롬프트 20선', icon: <Icons.Book /> },
+    { id: 'InstagramPrompts', label: '인스타 프롬프트', icon: <Icons.Marketing /> }, // 👈 인스타 프롬프트 복원 완료
     { id: 'SocialMonitor', label: '소셜 모니터링', icon: <Icons.Monitor /> },
     { id: 'ContentStudio', label: '콘텐츠 스튜디오', icon: <Icons.Studio /> },
     { id: 'AiMarketing', label: 'AI 마케팅', icon: <Icons.Marketing /> },
@@ -76,15 +77,15 @@ export default function App() {
       case 'HomeDashboard':
         return <HomeDashboard traffic={traffic} />;
       case 'AiPromptBook':
-        return <AiPromptBook />; // 👈 신규 페이지 렌더링 연결
+        return <AiPromptBook />;
+      case 'InstagramPrompts':
+        return <InstagramPrompts />;
       case 'SocialMonitor':
         return <SocialMonitor />;
       case 'ContentStudio':
         return <ContentStudio />;
       case 'AiMarketing':
         return <AiMarketing />;
-      case 'InstagramPrompts':
-        return <InstagramPrompts />;
       case 'IntegrationHub':
         return <IntegrationHub integrations={integrations} />;
       case 'WeeklyReport':
@@ -106,7 +107,7 @@ export default function App() {
       {/* 화사하고 깊이감 있는 하이엔드 글래스모피즘 오버레이 */}
       <div className="absolute inset-0 bg-gradient-to-br from-white/90 via-emerald-50/80 to-neutral-100/85 backdrop-blur-2xl pointer-events-none z-0"></div>
 
-      {/* 상단 네비게이션 바 (참조 디자인 반영: 가림 현상 해결, 완벽한 둥근 캡슐 스타일) */}
+      {/* 상단 네비게이션 바 */}
       <header className="relative z-50 sticky top-2 sm:top-4 max-w-7xl mx-auto mb-8 bg-white/75 backdrop-blur-3xl border border-white/90 rounded-3xl shadow-[0_10px_40px_rgb(0,0,0,0.08)] px-4 sm:px-6 py-3 transition-all">
         <div className="flex items-center justify-between gap-4">
           
@@ -125,14 +126,14 @@ export default function App() {
           </div>
 
           {/* 중앙: 모던 캡슐 네비게이션 탭 (데스크톱) */}
-          <nav className="hidden xl:flex items-center gap-1 bg-neutral-200/50 p-1 rounded-full border border-white/60 shadow-inner">
+          <nav className="hidden xl:flex items-center gap-1 bg-neutral-200/50 p-1 rounded-full border border-white/60 shadow-inner overflow-x-auto max-w-3xl">
             {tabs.map((tab) => {
               const isActive = activeTab === tab.id;
               return (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-bold transition-all duration-200 ${
+                  className={`flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-bold transition-all duration-200 shrink-0 ${
                     isActive
                       ? 'bg-white text-neutral-900 shadow-md border border-neutral-200/60 scale-[1.02]'
                       : 'text-neutral-600 hover:text-neutral-900 hover:bg-white/40 border border-transparent'
@@ -167,7 +168,7 @@ export default function App() {
 
         {/* 모바일 화면용 드롭다운 메뉴 */}
         {isMobileMenuOpen && (
-          <div className="xl:hidden mt-3 pt-3 border-t border-neutral-200/80 grid grid-cols-2 gap-2 animate-fade-in pb-2">
+          <div className="xl:hidden mt-3 pt-3 border-t border-neutral-200/80 grid grid-cols-2 sm:grid-cols-3 gap-2 animate-fade-in pb-2">
             {tabs.map((tab) => {
               const isActive = activeTab === tab.id;
               return (
@@ -192,7 +193,7 @@ export default function App() {
         )}
       </header>
 
-      {/* 메인 콘텐츠 영역 (원형 건강/수익 점수 그래프 및 하이엔드 글래스 박스 적용) */}
+      {/* 메인 콘텐츠 영역 */}
       <main className="relative z-10 max-w-7xl mx-auto">
         <div className="transition-all duration-300">
           {renderActiveComponent()}
