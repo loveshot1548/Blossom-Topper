@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-// 고급스러운 미니멀 SVG 아이콘 세트 (Book 아이콘 추가)
+// 고급스러운 미니멀 SVG 아이콘 세트 (Book 아이콘 포함)
 const Icons = {
   Leaf: () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>,
   PlaySquare: () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><polygon points="10 8 16 12 10 16 10 8"/></svg>,
@@ -15,11 +15,11 @@ const Icons = {
 export default function App() {
   const [activeTab, setActiveTab] = useState('콘텐츠 스튜디오');
   
-  // 🚀 [기능 1] 이미지 업로드 시뮬레이션 상태
+  // 🚀 업로드 시뮬레이션 상태
   const [uploadState, setUploadState] = useState('idle'); // idle, uploading, ai_processing, done
   const [trends, setTrends] = useState([]);
   
-  // 🚀 [기능 2] 프롬프트 대백과 사전 상태
+  // 🚀 프롬프트 대백과 사전 상태
   const [prompts, setPrompts] = useState([
     { id: 1, category: 'SNS 캡션', title: '슈링클스 키링 인스타 릴스 대본', content: '공방에서 직접 구운 슈링클스 키링 제작 과정을 보여주는 릴스 대본을 작성해줘. 시각적인 변화에 집중해서 감성적인 톤으로 부탁해.' },
     { id: 2, category: '블로그 SEO', title: '발포세라믹 화분 원데이 클래스 모객', content: '발포세라믹 화분 만들기 원데이 클래스를 홍보하는 네이버 블로그 포스팅을 작성해줘. 초보자도 쉽게 할 수 있다는 점을 강조해줘.' },
@@ -27,7 +27,7 @@ export default function App() {
   ]);
   const [newPrompt, setNewPrompt] = useState({ category: 'SNS 캡션', title: '', content: '' });
 
-  // 트렌드 기본 데이터 로드 (서버 통신 없이 로컬 데이터 사용)
+  // 트렌드 기본 데이터 로드 (로컬 데이터 시뮬레이션)
   useEffect(() => {
     setTrends([
       { rank: 1, keyword: '발포세라믹 화분', up: '+210%' },
@@ -41,17 +41,13 @@ export default function App() {
     const file = e.target.files[0];
     if (!file) return;
 
-    // 1단계: 업로드 시작
     setUploadState('uploading');
     
-    // 2단계: 1.5초 후 AI 처리 중으로 변경
     setTimeout(() => {
       setUploadState('ai_processing');
-      
-      // 3단계: 2초 후 완료 상태로 변경
       setTimeout(() => {
         setUploadState('done');
-        setTimeout(() => setUploadState('idle'), 4000); // 4초 뒤 원래대로 복귀
+        setTimeout(() => setUploadState('idle'), 4000);
       }, 2000);
     }, 1500);
   };
@@ -62,7 +58,7 @@ export default function App() {
     if (!newPrompt.title || !newPrompt.content) return;
     
     setPrompts([{ ...newPrompt, id: Date.now() }, ...prompts]);
-    setNewPrompt({ category: 'SNS 캡션', title: '', content: '' }); // 폼 초기화
+    setNewPrompt({ category: 'SNS 캡션', title: '', content: '' });
   };
 
   // 🚀 텍스트 복사 함수
@@ -112,17 +108,17 @@ export default function App() {
 
       <main className="relative z-10 max-w-6xl mx-auto">
         
-        {/* 1️⃣ 탭: 콘텐츠 스튜디오 (시뮬레이션 적용) */}
+        {/* 1️⃣ 탭: 콘텐츠 스튜디오 */}
         {activeTab === '콘텐츠 스튜디오' && (
           <div className="animate-fade-in">
             <div className="mb-8 text-center md:text-left">
               <span className="text-xs font-bold text-green-800 bg-white/90 px-3 py-1.5 rounded-full uppercase">Automated Publishing</span>
               <h1 className="text-3xl md:text-4xl font-extrabold my-4 text-gray-900 tracking-tight">AI 미디어 제작 및 자동 배포</h1>
-              <p className="text-gray-700 text-sm md:text-base max-w-2xl mx-auto md:mx-0">촬영한 원본 미디어를 업로드하면 AI가 릴스와 숏폼으로 자동 편집하여 발행합니다.</p>
+              <p className="text-gray-700 text-sm md:text-base max-w-2xl mx-auto md:mx-0">촬영한 원본 미디어를 업로드하면 AI가 릴스와 숏폼으로 자동 편집하여 소셜 미디어에 발행합니다.</p>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* 업로드 시뮬레이션 영역 */}
+              {/* 카드 1: 업로드 영역 */}
               <div className="bg-white/70 backdrop-blur-2xl rounded-3xl p-6 shadow-sm border border-white/90">
                 <h3 className="flex items-center text-lg font-bold mb-6 text-gray-900"><span className="mr-2"><Icons.Upload /></span> 1. 원본 미디어 수집</h3>
                 
@@ -142,11 +138,11 @@ export default function App() {
                   )}
                   {uploadState === 'uploading' && <span className="text-sm font-bold text-blue-600 animate-pulse">📤 클라우드로 미디어 전송 중...</span>}
                   {uploadState === 'ai_processing' && <span className="text-sm font-bold text-purple-600 animate-pulse">🤖 AI가 릴스 대본 및 해시태그 추출 중...</span>}
-                  {uploadState === 'done' && <span className="text-sm font-bold text-green-700">✨ 미디어 처리 완료! 멀티채널 배포 대기 중</span>}
+                  {uploadState === 'done' && <span className="text-sm font-bold text-green-700">✨ 미디어 처리 완료! 배포 대기 중</span>}
                 </label>
               </div>
 
-              {/* 배포 현황 */}
+              {/* 카드 2: 배포 현황 */}
               <div className="bg-white/70 backdrop-blur-2xl rounded-3xl p-6 shadow-sm border border-white/90">
                 <h3 className="flex items-center text-lg font-bold mb-6 text-gray-900"><span className="mr-2"><Icons.PlaySquare /></span> 2. 멀티채널 배포 현황</h3>
                 <div className="flex flex-col gap-4">
@@ -155,7 +151,7 @@ export default function App() {
                       <div className="text-sm font-bold text-gray-900">Instagram 피드 & 릴스</div>
                       <div className="text-xs text-gray-600 mt-1">[신상] 글라스아트 썬캐처 (생성 완료)</div>
                     </div>
-                    <button className="bg-green-800 text-white border-none px-4 py-2 rounded-xl text-xs font-bold cursor-pointer hover:bg-green-900">즉시 발행</button>
+                    <button className="bg-green-800 text-white border-none px-4 py-2 rounded-xl text-xs font-bold cursor-pointer">즉시 발행</button>
                   </div>
                   <div className="flex justify-between items-center pb-4 border-b border-black/5">
                     <div>
@@ -174,25 +170,89 @@ export default function App() {
           </div>
         )}
 
-        {/* 2️⃣ 탭: 트래픽 & 리드 (기존과 동일) */}
+        {/* 2️⃣ 탭: 트래픽 & 리드 (완전 복구됨) */}
         {activeTab === '트래픽 & 리드' && (
-           /* ... 기존 코드 내용 ... */
-           <div className="animate-fade-in text-center py-20">
-              <h2 className="text-2xl font-bold text-gray-800">트래픽 데이터 모니터링 영역</h2>
-              <p className="text-gray-600 mt-2">이전 탭의 코드가 그대로 유지됩니다.</p>
-           </div>
+          <div className="animate-fade-in">
+            <div className="mb-8 text-center md:text-left">
+              <span className="text-xs font-bold text-green-800 bg-white/90 px-3 py-1.5 rounded-full uppercase">Lead Generation & CRM</span>
+              <h1 className="text-3xl md:text-4xl font-extrabold my-4 text-gray-900 tracking-tight">스마트 트래픽 및 리드 제어</h1>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="bg-white/70 backdrop-blur-2xl rounded-3xl p-6 shadow-sm border border-white/90">
+                <h3 className="flex items-center text-lg font-bold mb-6 text-gray-900"><span className="mr-2"><Icons.Users /></span> 실시간 트래픽 요약</h3>
+                <div className="flex gap-4 mb-6">
+                  <div className="flex-1 bg-white/50 p-4 rounded-2xl border border-white/80">
+                    <span className="block text-xs text-gray-600 mb-1">금일 블로그 유입</span>
+                    <strong className="text-3xl font-light text-gray-900">342</strong>
+                  </div>
+                  <div className="flex-1 bg-white/50 p-4 rounded-2xl border border-white/80">
+                    <span className="block text-xs text-gray-600 mb-1">인스타 프로필 클릭</span>
+                    <strong className="text-3xl font-light text-gray-900">89</strong>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white/70 backdrop-blur-2xl rounded-3xl p-6 shadow-sm border border-white/90">
+                <h3 className="flex items-center text-lg font-bold mb-6 text-gray-900"><span className="mr-2"><Icons.Target /></span> 실시간 잠재고객(Lead) 알림</h3>
+                <div className="flex flex-col gap-4">
+                  <div className="bg-white/60 p-4 rounded-2xl border border-white/80">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-sm font-bold">카카오채널 문의 (s**_k)</span>
+                      <span className="text-[10px] bg-red-100 text-red-700 px-2 py-1 rounded-lg font-bold">구매 확률 94%</span>
+                    </div>
+                    <div className="text-xs text-gray-700 italic">"이번 주말 백일 잔치인데 혹시 급행 제작 가능한가요?"</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         )}
 
-        {/* 3️⃣ 탭: 인사이트 랩 (기존과 동일) */}
+        {/* 3️⃣ 탭: 인사이트 랩 (완전 복구됨) */}
         {activeTab === '인사이트 랩' && (
-           /* ... 기존 코드 내용 ... */
-           <div className="animate-fade-in text-center py-20">
-              <h2 className="text-2xl font-bold text-gray-800">해시태그 및 트렌드 분석 영역</h2>
-              <p className="text-gray-600 mt-2">이전 탭의 코드가 그대로 유지됩니다.</p>
-           </div>
+          <div className="animate-fade-in">
+            <div className="mb-8 text-center md:text-left">
+              <span className="text-xs font-bold text-green-800 bg-white/90 px-3 py-1.5 rounded-full uppercase">Data Analytics</span>
+              <h1 className="text-3xl md:text-4xl font-extrabold my-4 text-gray-900 tracking-tight">알고리즘 및 해시태그 분석</h1>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              
+              {/* 실시간 공예 시장 트렌드 */}
+              <div className="bg-white/70 backdrop-blur-2xl rounded-3xl p-6 shadow-sm border border-white/90">
+                <h3 className="flex items-center text-lg font-bold mb-6 text-gray-900"><span className="mr-2"><Icons.TrendingUp /></span> 실시간 공예 시장 트렌드</h3>
+                
+                <div className="flex flex-col gap-3">
+                  {trends.map((trend, index) => (
+                    <div key={index} className="flex items-center p-4 bg-white/50 rounded-2xl hover:bg-white/80 transition-colors">
+                      <span className="text-lg font-extrabold text-green-800 w-8">{trend.rank}</span>
+                      <span className="flex-1 text-sm font-bold text-gray-900">{trend.keyword}</span>
+                      <span className="text-xs font-bold text-red-600">{trend.up}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="bg-white/70 backdrop-blur-2xl rounded-3xl p-6 shadow-sm border border-white/90">
+                <h3 className="flex items-center text-lg font-bold mb-6 text-gray-900"><span className="mr-2"><Icons.Hash /></span> 고효율 해시태그 추출기</h3>
+                <div className="p-4 bg-white/40 rounded-2xl border border-white/60">
+                  <div className="text-xs text-gray-600 mb-3">AI 추천: 이번 주 전환율이 가장 높은 조합</div>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    <span className="text-xs bg-green-800/10 text-green-800 px-3 py-1.5 rounded-full font-bold">#제스모나이트소품</span>
+                    <span className="text-xs bg-green-800/10 text-green-800 px-3 py-1.5 rounded-full font-bold">#백일토퍼제작</span>
+                    <span className="text-xs bg-black/5 text-gray-700 px-3 py-1.5 rounded-full">#발포세라믹</span>
+                  </div>
+                  <button className="w-full bg-green-800 text-white font-bold text-sm py-3 rounded-xl transition-colors hover:bg-green-900 shadow-md hover:shadow-lg">
+                    클립보드에 복사
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         )}
 
-        {/* 4️⃣ 탭: 프롬프트 사전 (신규 추가!) */}
+        {/* 4️⃣ 탭: 프롬프트 사전 */}
         {activeTab === '프롬프트 사전' && (
           <div className="animate-fade-in">
             <div className="mb-8 text-center md:text-left">
@@ -268,7 +328,6 @@ export default function App() {
                   </div>
                 ))}
               </div>
-
             </div>
           </div>
         )}
