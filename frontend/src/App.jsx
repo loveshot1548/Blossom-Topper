@@ -22,7 +22,6 @@ const Icons = {
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('HomeDashboard');
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const [traffic, setTraffic] = useState({ blog: 412, insta: 128, store: 85 });
   
@@ -98,95 +97,45 @@ export default function App() {
            backgroundSize: 'cover', backgroundPosition: 'center', backgroundAttachment: 'fixed'
          }}>
       
-      {/* 원본의 은은하고 화사한 밝은 유리배경 오버레이 유지 */}
+      {/* 밝고 화사한 글래스모피즘 오버레이 배경 */}
       <div className="absolute inset-0 bg-gradient-to-br from-white/80 to-green-50/90 backdrop-blur-md pointer-events-none z-0"></div>
 
-      {/* 3분할 헤더 구도 적용 (좌측 로고/브랜드, 중앙 탭 메뉴, 우측 상태 배지 및 모바일 메뉴 버튼) */}
-      <header className="relative z-10 sticky top-0 backdrop-blur-xl bg-white/75 border border-white/90 rounded-2xl shadow-sm px-4 lg:px-6 py-3.5 max-w-7xl mx-auto mb-8">
-        <div className="grid grid-cols-3 items-center">
-          
-          {/* 좌측: 잎사귀 아이콘 및 브랜드 타이틀 */}
-          <div className="flex items-center gap-2.5 justify-start">
-            <span className="text-green-800 p-1.5 rounded-xl bg-green-800/10"><Icons.Leaf /></span>
-            <div className="hidden sm:block">
-              <div className="flex items-center gap-2">
-                <span className="font-extrabold text-sm tracking-tight text-gray-900">Blossom Topper</span>
-                <span className="text-[10px] font-mono tracking-wider bg-black text-white px-1.5 py-0.5 rounded">v2.6</span>
-              </div>
-              <p className="text-[11px] text-gray-500 font-medium">Control Center</p>
+      {/* 상단 헤더 및 네비게이션 */}
+      <header className="relative z-10 flex flex-col xl:flex-row justify-between items-center max-w-7xl mx-auto mb-8 gap-4 bg-white/60 backdrop-blur-xl p-4 rounded-3xl border border-white/90 shadow-sm">
+        <div className="flex items-center gap-3">
+          <span className="text-green-800 p-2 rounded-2xl bg-green-800/10"><Icons.Leaf /></span>
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="font-extrabold text-lg tracking-tight text-gray-900">Blossom Topper</span>
+              <span className="text-[10px] font-bold bg-black text-white px-2 py-0.5 rounded-md">v2.6</span>
             </div>
-          </div>
-
-          {/* 중앙: 탭 네비게이션 */}
-          <nav className="hidden xl:flex items-center justify-center gap-1 bg-white/60 p-1 rounded-xl border border-white/90 justify-self-center shadow-sm">
-            {tabs.map((tab) => {
-              const isActive = activeTab === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-150 ${
-                    isActive
-                      ? 'bg-white text-gray-900 shadow-sm border border-gray-200/60'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-white/50 border border-transparent'
-                  }`}
-                >
-                  <span className={isActive ? 'text-green-800' : 'text-gray-500'}>{tab.icon}</span>
-                  <span>{tab.label}</span>
-                </button>
-              );
-            })}
-          </nav>
-
-          {/* 우측: 시스템 상태 및 모바일 메뉴 토글 */}
-          <div className="flex items-center justify-end gap-3">
-            <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/80 border border-white text-xs text-gray-700 shadow-sm">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-600"></span>
-              </span>
-              <span className="font-mono text-[11px] font-bold">System Online</span>
-            </div>
-
-            <div className="xl:hidden flex items-center">
-              <button
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="px-3 py-1.5 bg-white hover:bg-gray-50 text-gray-700 rounded-xl text-xs font-bold border border-gray-200 shadow-sm transition-colors"
-              >
-                {isMobileMenuOpen ? '닫기 ✕' : '메뉴 ☰'}
-              </button>
-            </div>
+            <p className="text-xs text-gray-500 font-medium">Control Center</p>
           </div>
         </div>
 
-        {/* 모바일 화면용 드롭다운 메뉴 */}
-        {isMobileMenuOpen && (
-          <div className="xl:hidden mt-3 pt-3 border-t border-gray-200 grid grid-cols-2 sm:grid-cols-3 gap-1.5 animate-fade-in">
-            {tabs.map((tab) => {
-              const isActive = activeTab === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => {
-                    setActiveTab(tab.id);
-                    setIsMobileMenuOpen(false);
-                  }}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold transition-all ${
-                    isActive
-                      ? 'bg-green-800 text-white shadow-sm'
-                      : 'text-gray-700 bg-white/80 hover:bg-white border border-gray-200'
-                  }`}
-                >
-                  <span className={isActive ? 'text-white' : 'text-gray-500'}>{tab.icon}</span>
-                  <span className="truncate">{tab.label}</span>
-                </button>
-              );
-            })}
-          </div>
-        )}
+        {/* 탭 네비게이션 (가로 스크롤 대응) */}
+        <nav className="flex overflow-x-auto justify-start xl:justify-center gap-1.5 bg-white/70 backdrop-blur-xl p-1.5 rounded-2xl shadow-sm border border-white/90 max-w-full custom-scrollbar">
+          {tabs.map((tab) => {
+            const isActive = activeTab === tab.id;
+            return (
+              <button 
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all shrink-0 ${
+                  isActive 
+                    ? 'bg-green-800 text-white shadow-md' 
+                    : 'text-gray-600 hover:bg-white/80 hover:text-gray-900'
+                }`}
+              >
+                <span className={`flex items-center justify-center ${isActive ? 'text-white' : 'text-gray-500'}`}>{tab.icon}</span>
+                <span className="whitespace-nowrap">{tab.label}</span>
+              </button>
+            );
+          })}
+        </nav>
       </header>
 
-      {/* 메인 콘텐츠 영역 (글래스 박스 투명 배경 컴포넌트 유지) */}
+      {/* 메인 콘텐츠 영역 */}
       <main className="relative z-10 max-w-7xl mx-auto">
         <div className="animate-fade-in">
           {renderActiveComponent()}
