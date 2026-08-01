@@ -1,38 +1,35 @@
 import React from 'react';
 
-export default function YearlyCalendar() {
-  const events = [
-    { month: '5월', title: '어버이날 / 스승의 날', target: '카네이션 토퍼 & 감사패', status: '준비 완료' },
-    { month: '8월', title: '여름 휴가철 / 백일·돌잔치', target: '글라스아트 썬캐처 & 여행 토퍼', status: '진행중' },
-    { month: '10월', title: '가을 웨딩 시즌', target: '제스모나이트 답례품 & 링필로우', status: '대기' },
-    { month: '12월', title: '크리스마스 / 연말 시즌', target: '발포세라믹 캔들홀더 & 캘리그라피', status: '대기' },
-  ];
-
+export default function YearlyCalendar({ schedule }) {
   return (
-    <div>
-      <div style={{ marginBottom: '2rem' }}>
-        <span style={styles.badge}>시즌별 마케팅 플래너</span>
-        <h1 style={{ fontSize: '2.3rem', fontWeight: '800', margin: '0.6rem 0 0.4rem 0' }}>공방 연간 주요 행사표</h1>
-        <p style={{ fontSize: '0.95rem', color: '#475569' }}>연중 특수 시즌에 맞춰 공방 샘플 제작 및 미리보기 마케팅 일정을 관리합니다.</p>
+    <div className="animate-fade-in space-y-6">
+      <div className="mb-6">
+        <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">연간 기획 캘린더</h1>
+        <p className="text-gray-700 mt-2">시즌별 주력 공예품 라인업과 마케팅 일정을 확인하세요.</p>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.2rem' }}>
-        {events.map((ev, idx) => (
-          <div key={idx} style={styles.glassCard}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: '1.2rem', fontWeight: '800', color: '#658354' }}>{ev.month}</span>
-              <span style={{ fontSize: '0.75rem', background: 'rgba(0,0,0,0.05)', padding: '3px 8px', borderRadius: '8px' }}>{ev.status}</span>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {schedule.map((item, idx) => (
+          <div key={idx} className="bg-white/70 backdrop-blur-2xl rounded-3xl p-6 shadow-sm border border-white/90 relative">
+            <div className="absolute -top-3 -left-3 bg-gray-900 text-white text-xs font-extrabold px-3 py-1.5 rounded-lg shadow-md">
+              {item.month}
             </div>
-            <h3 style={{ fontSize: '1.1rem', margin: '0.5rem 0' }}>{ev.title}</h3>
-            <p style={{ fontSize: '0.85rem', color: '#555', margin: 0 }}>🎯 주력 자재/작품: <b>{ev.target}</b></p>
+            <div className="mt-4">
+              <h3 className="text-lg font-bold text-gray-900 mb-2">{item.event}</h3>
+              <div className="text-sm text-gray-600 bg-white/50 p-3 rounded-xl border border-gray-100">
+                <span className="font-bold block mb-1">🎯 주력 타겟 품목</span>
+                {item.target}
+              </div>
+            </div>
           </div>
         ))}
+        
+        {/* 새로운 기획 추가 카드 */}
+        <button className="bg-white/40 backdrop-blur-2xl rounded-3xl p-6 shadow-sm border-2 border-dashed border-gray-300 hover:bg-white/60 transition-all flex flex-col items-center justify-center min-h-[160px]">
+          <div className="text-2xl text-gray-400 mb-2">+</div>
+          <span className="text-sm font-bold text-gray-500">새 시즌 기획 추가하기</span>
+        </button>
       </div>
     </div>
   );
 }
-
-const styles = {
-  badge: { fontSize: '0.8rem', fontWeight: '800', color: '#385e2b', background: 'rgba(255,255,255,0.8)', padding: '4px 10px', borderRadius: '8px' },
-  glassCard: { background: 'rgba(255, 255, 255, 0.65)', backdropFilter: 'blur(20px)', borderRadius: '28px', padding: '1.5rem', border: '1px solid rgba(255, 255, 255, 0.8)' }
-};
