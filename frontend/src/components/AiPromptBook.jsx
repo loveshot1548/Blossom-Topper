@@ -50,18 +50,18 @@ export default function AiPromptBook() {
               <span>✨ 2026 1인 공방 전자책 공식 연동</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-black text-neutral-900 tracking-tight leading-snug">
-              글쓰기보다 중요한 건 <span className="text-emerald-700">질문(프롬프트)</span>입니다.
+              글쓰기보다 중요한 건 <span className="text-emerald-700">질문(프롬프트)</span>입니다[cite: 1].
             </h1>
             <p className="text-sm text-neutral-600 mt-3 leading-relaxed">
-              복붙만 해도 네이버 AI 브리핑(NAVER MATE) 상위 노출 초안이 완성되는 실전 프롬프트 20선입니다. 
-              초안은 AI에게 맡기고, 사장님만의 생생한 손끝 경험을 더해 공방 매출을 극대화하세요![cite: 1]
+              복붙만 해도 네이버 AI 브리핑(NAVER MATE) 상위 노출 초안이 완성되는 실전 프롬프트 20선입니다[cite: 1]. 
+              초안은 AI에게 맡기고, 사장님만의 생생한 손끝 경험을 더해 공방 매출을 극대화하세요!
             </p>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6 pt-6 border-t border-neutral-200/60">
             <div className="bg-neutral-50/80 p-3 rounded-2xl border border-neutral-200/50">
               <p className="text-[11px] text-neutral-500 font-bold">네이버 AI 인용수</p>
-              <p className="text-lg font-black text-emerald-700 mt-0.5">661회</p>
+              <p className="text-lg font-black text-emerald-700 mt-0.5">661회[cite: 1]</p>
             </div>
             <div className="bg-neutral-50/80 p-3 rounded-2xl border border-neutral-200/50">
               <p className="text-[11px] text-neutral-500 font-bold">SEO 최적화율</p>
@@ -78,7 +78,7 @@ export default function AiPromptBook() {
           </div>
         </div>
 
-        {/* 우측: 참조 이미지 스타일의 고품격 원형 건강/수익 점수 카드 (모바일 최적화) */}
+        {/* 우측: 참조 이미지 스타일의 고품격 원형 건강/수익 점수 카드 */}
         <div className="bg-white/85 backdrop-blur-2xl border border-white/90 p-6 rounded-3xl shadow-[0_10px_30px_rgb(0,0,0,0.04)] flex flex-col items-center justify-center text-center relative overflow-hidden">
           <div className="absolute -right-10 -top-10 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none"></div>
           
@@ -87,7 +87,6 @@ export default function AiPromptBook() {
               <span className="text-3xl font-black text-emerald-800 tracking-tight">92%</span>
               <p className="text-[10px] uppercase tracking-wider font-bold text-emerald-600 mt-0.5">Health Score</p>
             </div>
-            {/* 원형 테두리 포인트 장식 */}
             <div className="absolute inset-0 rounded-full border-4 border-emerald-600 border-t-transparent animate-spin" style={{ animationDuration: '12s' }}></div>
           </div>
 
@@ -131,7 +130,7 @@ export default function AiPromptBook() {
         </button>
       </div>
 
-      {/* 프롬프트 카드 그리드 (즉시 복사 가능) */}
+      {/* 프롬프트 카드 그리드 */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {filteredPrompts.map((item) => (
           <div 
@@ -161,10 +160,7 @@ export default function AiPromptBook() {
                     : 'bg-neutral-900 text-white hover:bg-neutral-800 shadow-sm'
                 }`}
               >
-                {copiedId === item.id ? (
-                  <>✓ 복사 완료!</>
-                <>프롬프트 복사하기</>
-                )}
+                {copiedId === item.id ? '✓ 복사 완료!' : '프롬프트 복사하기'}
               </button>
             </div>
           </div>
@@ -177,14 +173,14 @@ export default function AiPromptBook() {
           <span className="bg-emerald-500 text-neutral-900 text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full">
             💡 긍정쌤의 핵심 원칙
           </span>
-          <h3 className="text-lg sm:text-xl font-bold mt-3">"초안은 AI, 경험은 사장님"</h3>
+          <h3 className="text-lg sm:text-xl font-bold mt-3">"초안은 AI, 경험은 사장님"[cite: 1]</h3>
           <p className="text-xs sm:text-sm text-neutral-300 mt-1 leading-relaxed">
             AI가 써준 초안에 반드시 사장님의 실제 공방 시행착오와 수치, 직접 찍은 사진을 더해 네이버 가이드라인(경험 중심 SEO)을 충족시키세요[cite: 1].
           </p>
         </div>
         <div className="shrink-0">
           <div className="px-5 py-3 rounded-2xl bg-white/10 border border-white/20 text-center font-mono text-xs">
-            <span className="text-emerald-400 font-bold">2026 네이버 메이트</span> 도전 중 🚀
+            <span className="text-emerald-400 font-bold">2026 네이버 메이트</span> 도전 중 🚀[cite: 1]
           </div>
         </div>
       </div>
