@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 
 
 // 🚀 1. 생성하신 6개의 모듈 컴포넌트 불러오기 (같은 폴더에 있다고 가정)
-import HomeDashboard from './HomeDashboard';
-import ContentStudio from './ContentStudio';
-import AiMarketing from './AiMarketing';
-import IntegrationHub from './IntegrationHub';
-import WeeklyReport from './WeeklyReport';
-import YearlyCalendar from './YearlyCalendar';
+import HomeDashboard from './HomeDashboard.jsx';
+import ContentStudio from './ContentStudio.jsx';
+import AiMarketing from './AiMarketing.jsx';
+import IntegrationHub from './IntegrationHub.jsx';
+import WeeklyReport from './WeeklyReport.jsx';
+import YearlyCalendar from './YearlyCalendar.jsx';
 
 // 상단 네비게이션 아이콘 세트
 const Icons = {
