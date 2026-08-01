@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
 
+// 🌐 n8n 서버 기본 주소 (필요 시 실제 외부 도메인/주소로 교체하세요)
+const N8N_BASE_URL = 'http://localhost:5678'; 
+const WEBHOOK_ID = 'b87c0d91-0abf-4c4d-97c2-83aac7a69147';
+
 // 고급스러운 미니멀 SVG 아이콘 세트
 const Icons = {
   Leaf: () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>,
@@ -23,17 +27,16 @@ export default function App() {
   useEffect(() => {
     const fetchTrends = async () => {
       try {
-        // n8n에서 만든 GET 방식 웹훅 URL을 입력하세요.
-        const response = await fetch('http://localhost:5678/webhook/trends-data');
+        // n8n GET 방식 웹훅 호출
+        const response = await fetch(`${N8N_BASE_URL}/webhook-test/${WEBHOOK_ID}`);
         
-        // 정상 응답이 아닐 경우 강제로 에러를 발생시켜 catch 블록으로 이동
         if (!response.ok) throw new Error('네트워크 응답이 올바르지 않습니다.');
         
         const data = await response.json();
         setTrends(data);
       } catch (error) {
         console.error('트렌드 데이터를 불러오는 중 오류 발생:', error);
-        // 통신 실패 시(혹은 웹훅 연결 전) 보여줄 기본(Fallback) 데이터
+        // 통신 실패 시 Fallback 데이터
         setTrends([
           { rank: 1, keyword: '발포세라믹 화분', up: '+210%' },
           { rank: 2, keyword: '슈링클스 키링', up: '+185%' },
@@ -45,31 +48,32 @@ export default function App() {
     };
 
     fetchTrends();
-    
-    // 주석 해제 시 5분마다 실시간 자동 갱신
-    // const interval = setInterval(fetchTrends, 5 * 60 * 1000);
-    // return () => clearInterval(interval);
   }, []);
 
-  // 🚀 이미지 업로드 및 Vercel 자동 재배포 트리거
+  // 🚀 이미지 업로드 및 n8n 파이프라인 트리거 (주석 제거 및 실시간 연동 완성)
   const handleUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
     setIsUploading(true);
     try {
-      // 1. n8n 웹훅으로 이미지 전송 (URL은 실제 n8n 웹훅 주소로 변경 필요)
-      // const formData = new FormData();
-      // formData.append('file', file);
-      // await fetch('YOUR_N8N_WEBHOOK_URL', { method: 'POST', body: formData });
+      // 1. n8n POST 웹훅으로 파일 포장 후 전송
+      const formData = new FormData();
+      formData.append('file', file);
+      
+      const response = await fetch(`${N8N_BASE_URL}/webhook-test/${WEBHOOK_ID}`, {
+        method: 'POST',
+        body: formData,
+      });
 
-      // 2. Vercel Deploy Hook 호출 (재배포)
-      // await fetch('YOUR_VERCEL_DEPLOY_HOOK_URL', { method: 'POST' });
+      if (!response.ok) {
+        throw new Error(`n8n 서버 응답 에러 (상태 코드: ${response.status})`);
+      }
 
-      alert('성공적으로 업로드되었으며, 서버 재배포가 시작되었습니다.');
+      alert('성공적으로 업로드되었습니다! n8n 파이프라인이 구동됩니다.');
     } catch (error) {
       console.error('업로드 실패:', error);
-      alert('업로드 중 오류가 발생했습니다.');
+      alert(`업로드 실패: ${error.message}\nn8n Webhook 노드의 'Listen for test event' 버튼이 켜져 있는지 확인해 주세요.`);
     } finally {
       setIsUploading(false);
     }
@@ -131,9 +135,9 @@ export default function App() {
                 
                 <label className="flex flex-col justify-center items-center h-48 border-2 border-dashed border-green-800/40 rounded-2xl bg-white/40 cursor-pointer hover:bg-white/60 transition-all">
                   <input type="file" className="hidden" accept="image/*,video/*" onChange={handleUpload} disabled={isUploading} />
-                  <div className="text-gray-500 mb-4">{isUploading ? '업로드 및 배포 중...' : <Icons.PlaySquare />}</div>
+                  <div className="text-gray-500 mb-4">{isUploading ? 'n8n으로 전송 중...' : <Icons.PlaySquare />}</div>
                   <span className="text-sm text-gray-700 font-medium">작업물 미디어를 터치하여 업로드</span>
-                  <span className="text-xs text-gray-500 mt-2">업로드 시 자동 배포(Vercel) 파이프라인 가동</span>
+                  <span className="text-xs text-gray-500 mt-2">업로드 시 n8n 자동화 파이프라인 즉시 가동</span>
                 </label>
               </div>
 
@@ -210,7 +214,7 @@ export default function App() {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               
-              {/* 🚀 데이터 Fetch를 반영한 실시간 트렌드 영역 */}
+              {/* 실시간 공예 시장 트렌드 */}
               <div className="bg-white/70 backdrop-blur-2xl rounded-3xl p-6 shadow-sm border border-white/90">
                 <h3 className="flex items-center text-lg font-bold mb-6 text-gray-900"><span className="mr-2"><Icons.TrendingUp /></span> 실시간 공예 시장 트렌드</h3>
                 
