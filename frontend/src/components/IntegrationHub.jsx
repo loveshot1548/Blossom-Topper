@@ -4,41 +4,22 @@ export default function IntegrationHub() {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
   
-  // 파이프라인 분기 상태
+  // 파이프라인 상태
   const [targetTool, setTargetTool] = useState('canva');
   const [contentFormat, setContentFormat] = useState('cardnews');
-  
-  // 세부 지시사항 (Director's Prompt)
   const [directorPrompt, setDirectorPrompt] = useState('');
   
+  // 🌟 핵심: n8n에서 실제 되돌려준 결과 데이터를 저장할 상태
+  const [executionResult, setExecutionResult] = useState(null);
+
   const fileInputRef = useRef(null);
 
-  // 🌟 앱 내 저장된 프롬프트 불러오기 (프리셋 데이터)
   const savedPrompts = [
-    { 
-      id: 1, 
-      label: '🌊 여름 바다 슈링클스', 
-      text: '이번 슈링클스 키링은 여름 바다 컨셉입니다. 청량하고 시원한 톤으로 인스타 캡션을 뽑아주고, 카드뉴스 첫 장 텍스트에는 "여름 한정 수량"을 굵게 강조해주세요.' 
-    },
-    { 
-      id: 2, 
-      label: '🪴 발포세라믹 클래스', 
-      text: '발포세라믹 화분 원데이 클래스 모집글입니다. 초보자도 흙먼지 없이 깔끔하게 만들 수 있다는 점을 강조하고, 마지막 장에 프로필 링크 예약 유도 문구를 넣어주세요.' 
-    },
-    { 
-      id: 3, 
-      label: '✨ 제스모나이트 감성', 
-      text: '제스모나이트 마블링 트레이 신제품 소개입니다. 고급스럽고 차분한 감성 에세이 톤으로 작성해주고, 해시태그는 인테리어 소품 위주로 15개 추천해주세요.' 
-    },
-    {
-      id: 4,
-      label: '🎨 페이퍼 아트 주문제작',
-      text: '페이퍼 아트 토퍼 맞춤 주문제작 완료 건입니다. 고객의 특별한 기념일을 축하하는 따뜻한 메시지를 담아주고, 릴스 대본용으로 15초 분량의 텍스트도 함께 추출해주세요.'
-    }
+    { id: 1, label: '🌊 여름 바다 슈링클스', text: '이번 슈링클스 키링은 여름 바다 컨셉입니다. 청량한 톤으로 캡션을 뽑고, 카드뉴스 첫 장에 "여름 한정 수량"을 강조해주세요.' },
+    { id: 2, label: '🪴 발포세라믹 클래스', text: '발포세라믹 화분 원데이 클래스 모집글입니다. 초보자도 깔끔하게 만들 수 있다는 점을 강조해주세요.' }
   ];
 
   const handlePromptSelect = (text) => {
-    // 기존 텍스트가 있으면 덧붙이고, 없으면 새로 덮어쓰기
     setDirectorPrompt(prev => prev ? `${prev}\n\n${text}` : text);
   };
 
@@ -57,11 +38,11 @@ export default function IntegrationHub() {
 
     setIsUploading(true);
     setUploadSuccess(false);
+    setExecutionResult(null); // 이전 결과 초기화
 
     try {
       const base64Data = await convertToBase64(file);
 
-      // n8n으로 보낼 최종 페이로드
       const payload = {
         fileName: file.name,
         mimeType: file.type,
@@ -75,47 +56,48 @@ export default function IntegrationHub() {
         }
       };
 
-      console.log("n8n 전송 데이터 프리뷰:", payload.metadata);
+      // 🌟 실제 n8n 웹훅 호출 (URL 입력 필요)
+      // const response = await fetch('http://localhost:5678/webhook/blossom-formill-in', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify(payload),
+      // });
+      // const result = await response.json();
 
-      // 실제 n8n Webhook URL
-      // await fetch('YOUR_N8N_WEBHOOK_URL', { ... });
-      
+      // [테스트 시뮬레이션용 가상 응답 데이터]
       await new Promise(resolve => setTimeout(resolve, 3000));
+      const mockResult = {
+        status: "success",
+        executionId: "EXEC-" + Math.floor(1000 + Math.random() * 9000),
+        generatedCaption: `[${targetTool.toUpperCase()} 연동 성공]\n✨ ${directorPrompt || '기본 지침 반영'}\n\n손끝에서 피어나는 나만의 공예품, Blossom Topper에서 만나보세요! 🌿\n#공방 #원데이클래스 #수제공예`,
+        designUrl: targetTool === 'canva' ? "https://canva.com/design/MOCK_ID" : "https://figma.com/file/MOCK_ID",
+        notionSaved: true
+      };
+
+      setExecutionResult(mockResult);
       setUploadSuccess(true);
       
     } catch (error) {
       console.error("업로드 에러 발생:", error);
+      alert("n8n 서버 전송 실패! Webhook URL 또는 네트워크 상태를 확인하세요.");
     } finally {
-      setTimeout(() => {
-        setIsUploading(false);
-        setUploadSuccess(false);
-        setDirectorPrompt(''); // 전송 후 초기화
-        if (fileInputRef.current) fileInputRef.current.value = '';
-      }, 3000);
+      setIsUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
     }
   };
 
-  const integrations = [
-    { name: 'n8n Webhook', status: 'CONNECTED', latency: '42ms', lastSync: '방금 전', desc: 'JSON 페이로드 수신 및 라우팅' },
-    { name: 'Google AI Studio', status: 'ACTIVE', latency: '210ms', lastSync: '방금 전', desc: '디렉터 지시사항 반영 및 텍스트 생성' },
-    { name: 'Canva API', status: targetTool === 'canva' ? 'ACTIVE' : 'STANDBY', latency: '85ms', lastSync: '방금 전', desc: '템플릿 기반 자동 병합' },
-    { name: 'Figma API', status: targetTool === 'figma' ? 'ACTIVE' : 'STANDBY', latency: '-', lastSync: '어제', desc: '고급 컴포넌트 자동화' }
-  ];
-
   return (
     <div className="space-y-6 animate-fade-in pb-16">
-      
       <div>
         <h2 className="text-2xl font-black text-neutral-900 tracking-tight">연동 허브</h2>
         <p className="text-sm text-neutral-600 mt-1.5 leading-relaxed">
-          미디어 업로드 시 설정한 타겟 툴과 세부 지시사항이 n8n 파이프라인으로 전달되어, <br className="hidden sm:block" />
-          AI가 대표님의 디렉팅에 맞춘 최적화된 콘텐츠를 자동 생성합니다.
+          미디어와 디렉터 프롬프트를 전송하면 n8n의 구글 AI 스튜디오 및 디자인 API가 실시간 작동합니다.
         </p>
       </div>
 
       <div className="bg-white/80 backdrop-blur-2xl border border-white/90 p-5 sm:p-7 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
         
-        {/* 파이프라인 설정 폼 (스위치 UI) */}
+        {/* 스위치 & 프롬프트 설정 */}
         <div className="mb-5 p-4 bg-neutral-50/80 rounded-2xl border border-neutral-200/60 flex flex-col sm:flex-row gap-4 justify-between items-center">
           <div className="flex items-center gap-3 w-full sm:w-auto">
             <span className="text-xs font-bold text-neutral-700 whitespace-nowrap">타겟 툴:</span>
@@ -134,79 +116,80 @@ export default function IntegrationHub() {
           </div>
         </div>
 
-        {/* 🌟 프롬프트 퀵 선택 및 세부 지시사항 입력 영역 */}
+        {/* 프롬프트 입력 영역 */}
         <div className="mb-6">
-          <div className="flex items-end justify-between mb-2 px-1">
-            <label className="block text-xs font-bold text-neutral-700">
-              세부 지시사항 (Google AI Studio 전달용)
-            </label>
-          </div>
-          
-          {/* 빠른 프롬프트 칩스 (가로 스크롤) */}
-          <div className="flex gap-2 overflow-x-auto pb-3 mb-1 scrollbar-hide">
+          <label className="block text-xs font-bold text-neutral-700 mb-2">세부 지시사항 (Director Prompt)</label>
+          <div className="flex gap-2 overflow-x-auto pb-3 mb-1">
             {savedPrompts.map(prompt => (
-              <button
-                key={prompt.id}
-                onClick={() => handlePromptSelect(prompt.text)}
-                className="shrink-0 px-3 py-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200/60 rounded-full text-[11px] font-bold hover:bg-emerald-100 hover:shadow-sm transition-all active:scale-95"
-              >
+              <button key={prompt.id} onClick={() => handlePromptSelect(prompt.text)} className="shrink-0 px-3 py-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200/60 rounded-full text-[11px] font-bold hover:bg-emerald-100 transition-all">
                 {prompt.label}
               </button>
             ))}
           </div>
-
           <textarea
             value={directorPrompt}
             onChange={(e) => setDirectorPrompt(e.target.value)}
-            placeholder="상단의 태그를 클릭하여 저장된 프롬프트를 불러오거나, 직접 지시사항을 입력하세요."
-            className="w-full h-28 p-4 bg-white/50 border border-neutral-200/60 rounded-2xl text-sm text-neutral-800 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 transition-all resize-none shadow-inner"
+            placeholder="지시사항을 입력하세요..."
+            className="w-full h-24 p-4 bg-white/50 border border-neutral-200/60 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/30 resize-none"
           />
         </div>
 
-        {/* 파일 업로드 드롭존 */}
+        {/* 업로드 버튼 */}
         <input type="file" ref={fileInputRef} onChange={handleFileUpload} className="hidden" accept="image/*,video/*" />
         <div 
           onClick={() => !isUploading && fileInputRef.current.click()}
-          className={`border-2 border-dashed rounded-2xl p-8 text-center transition-all duration-300 ${
-            isUploading ? 'border-emerald-400 bg-emerald-50/50 cursor-wait' : uploadSuccess ? 'border-emerald-500 bg-emerald-100/50 cursor-default' : 'border-neutral-200 hover:border-emerald-400 hover:bg-emerald-50/30 cursor-pointer'
+          className={`border-2 border-dashed rounded-2xl p-6 text-center transition-all ${
+            isUploading ? 'border-emerald-400 bg-emerald-50/50 cursor-wait' : 'border-neutral-200 hover:border-emerald-400 hover:bg-emerald-50/30 cursor-pointer'
           }`}
         >
           {isUploading ? (
-            <div className="flex flex-col items-center justify-center animate-pulse">
-              <div className="w-12 h-12 rounded-full border-4 border-emerald-200 border-t-emerald-600 animate-spin mb-4"></div>
-              <p className="text-sm font-bold text-emerald-800">지시사항 인코딩 및 n8n 전송 중...</p>
-            </div>
-          ) : uploadSuccess ? (
-            <div className="flex flex-col items-center justify-center">
-              <div className="w-12 h-12 rounded-full bg-emerald-500 text-white flex items-center justify-center text-2xl mb-4 shadow-lg shadow-emerald-500/30">✓</div>
-              <p className="text-sm font-bold text-emerald-900">파이프라인 호출 완료!</p>
+            <div className="flex flex-col items-center justify-center animate-pulse py-4">
+              <div className="w-10 h-10 rounded-full border-4 border-emerald-200 border-t-emerald-600 animate-spin mb-3"></div>
+              <p className="text-sm font-bold text-emerald-800">n8n 파이프라인 가동 및 Google AI 분석 중...</p>
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center">
-              <div className="w-14 h-14 rounded-full bg-neutral-100 flex items-center justify-center text-neutral-400 mb-4 group-hover:scale-110 transition-transform">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-              </div>
-              <p className="text-sm font-bold text-neutral-800">클릭하여 미디어를 업로드하고 파이프라인을 가동하세요</p>
+            <div className="py-2">
+              <p className="text-sm font-bold text-neutral-800">📸 이미지/영상 파일 선택하여 n8n 파이프라인 전송</p>
             </div>
           )}
         </div>
-      </div>
 
-      {/* 상태 모니터링 카드 */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {integrations.map((item, index) => (
-          <div key={index} className="bg-white/85 backdrop-blur-xl border border-white/90 p-5 rounded-3xl shadow-[0_4px_20px_rgb(0,0,0,0.03)] flex flex-col justify-between">
-            <div className="flex items-start justify-between mb-6">
+        {/* 🌟 2. 실제 전송 및 생성 결과 모니터링 카드 (눈으로 확인하는 영역) */}
+        {executionResult && (
+          <div className="mt-6 p-5 bg-emerald-950 text-emerald-50 rounded-2xl border border-emerald-800 shadow-xl animate-fade-in font-mono text-xs">
+            <div className="flex justify-between items-center border-b border-emerald-800/80 pb-3 mb-3">
+              <span className="font-bold text-emerald-400 text-sm flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                n8n 실행 완료 (ID: {executionResult.executionId})
+              </span>
+              <span className="bg-emerald-900 text-emerald-300 px-2 py-0.5 rounded text-[10px]">
+                Notion DB 동기화됨
+              </span>
+            </div>
+
+            <div className="space-y-3">
               <div>
-                <h3 className="font-bold text-neutral-900 text-[15px]">{item.name}</h3>
-                <p className="text-[11px] text-neutral-500 mt-1">{item.desc}</p>
+                <span className="text-emerald-500 block mb-1 font-sans font-bold">[생성된 인스타 캡션/대본]</span>
+                <p className="bg-emerald-900/50 p-3 rounded-xl whitespace-pre-wrap font-sans text-neutral-200 leading-relaxed text-xs border border-emerald-800/50">
+                  {executionResult.generatedCaption}
+                </p>
               </div>
-              <span className={`text-[10px] font-black px-2.5 py-1 rounded-md tracking-wide ${
-                item.status === 'CONNECTED' || item.status === 'ACTIVE' ? 'bg-emerald-100 text-emerald-700' : 'bg-neutral-100 text-neutral-500'
-              }`}>{item.status}</span>
+
+              <div className="flex justify-between items-center pt-2">
+                <span className="text-emerald-500 font-sans font-bold">[타겟 디자인 레이아웃]</span>
+                <a 
+                  href={executionResult.designUrl} 
+                  target="_blank" 
+                  rel="noreferrer"
+                  className="bg-emerald-500 hover:bg-emerald-400 text-neutral-950 font-sans font-bold px-3 py-1.5 rounded-lg transition-all"
+                >
+                  {targetTool.toUpperCase()} 바로가기 ↗
+                </a>
+              </div>
             </div>
           </div>
-        ))}
+        )}
+
       </div>
     </div>
   );
